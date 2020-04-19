@@ -9,6 +9,8 @@ import sys
 import pandas as pd
 import tkinter
 
+#Hola
+
 def validacion_color(text, new_text):
     if len(new_text)>8:
         return False
