@@ -10,95 +10,95 @@ import pandas as pd
 import tkinter
 
 
-def validacion_color(text, new_text):
+def validate_colour(text, new_text):
     if len(new_text)>8:
         return False
     return text.isdecimal()
 
 
-def hora_inicio_cambio():
+def change_start_time():
     now=datetime.now()
-    fecha=now.strftime("%d/%m/%Y - %H:%M:%S")
-    fecha_hora_inicio_cambio.set(fecha)
-    return fecha_hora_inicio_cambio
+    date=now.strftime("%d/%m/%Y - %H:%M:%S")
+    change_start_date_time.set(date)
+    return change_start_date_time
 
 
-def hora_inicio_color():
+def colour_start_time():
     now=datetime.now()
-    fecha=now.strftime("%d/%m/%Y - %H:%M:%S")
-    fecha_hora_inicio_color.set(fecha)
-    return fecha_hora_inicio_color
+    date=now.strftime("%d/%m/%Y - %H:%M:%S")
+    colour_start_date_time.set(date)
+    return colour_start_date_time
     
 
-def hora_final_color():
+def colour_end_time():
     now=datetime.now()
-    fecha=now.strftime("%d/%m/%Y - %H:%M:%S")
-    fecha_hora_final_color.set(fecha)
-    return fecha_hora_final_color
+    date=now.strftime("%d/%m/%Y - %H:%M:%S")
+    colour_end_date_time.set(date)
+    return colour_end_date_time
 
 
-def validacion_bastidor(text, new_text):
+def validate_hangers(text, new_text):
     if len(new_text)>2:
         return False
     return text.isdecimal()
 
 
-def validacion_observaciones(new_text):
+def validate_observations(new_text):
     if len(new_text)>50:
         return False
 
 
-def registrar():
+def register():
     
     # Cargar todos los colores en una lista.
-    with open("Colores.csv", "r") as colores:
-        lines = reader(colores)
+    with open("Colores.csv", "r") as colour:
+        lines = reader(colour)
         header = next(lines)
     
-        lista_colores = []
+        colour_list = []
     
         #if header!=None:
-        for linea in colores:
+        for line in colour:
             #lista_colores.append(linea)
-            lista_colores.append(linea[0:8])
+            colour_list.append(line[0:8])
 
     # Añadir la palabra FIN a la lista de los colores
-    lista_colores.append("FIN")
-    lista_colores.append("OTRO")
+    colour_list.append("FIN")
+    colour_list.append("OTRO")
     
     
     
-    if color_2.get()=="OTRO" and observaciones_2.get()=="":
+    if colour_2.get()=="OTRO" and observations_2.get()=="":
         messagebox.showerror(message="Si no me pones el color...ponlo en las observaciones :)", title="Falta poner el color en las observaciones")
     
-    elif str(color_2.get()[0:9]) in lista_colores and color_2.get()!="" and fecha_hora_inicio_cambio.get()!="" and fecha_hora_inicio_color.get()!="" and fecha_hora_final_color.get()!="" and bastidores_2.get()!="":
-    #elif color_2.get()!="" and fecha_hora_inicio_cambio.get()!="" and fecha_hora_inicio_color.get()!="" and fecha_hora_final_color.get()!="" and bastidores_2.get()!="":
-    #if fecha_hora_inicio_cambio.get()!="" and fecha_hora_inicio_color.get()!="" and fecha_hora_final_color.get()!="" and bastidores_2.get()!="":
+    elif str(colour_2.get()[0:9]) in colour_list and colour_2.get()!="" and change_start_date_time.get()!="" and colour_start_date_time.get()!="" and colour_end_date_time.get()!="" and hangers_2.get()!="":
+    #elif colour_2.get()!="" and change_start_date_time.get()!="" and colour_start_date_time.get()!="" and colour_end_date_time.get()!="" and hangers_2.get()!="":
+
         # Registrar en el archivo.
         # Falta ponerle en número del registro.
         # Falta comprobar si está el archivo, en caso de que no esté hacerlo nuevo poniéndole el encabezado (nº registro, colores, hora inicio cambio, hora inicio color, hora fin, bastidores y observaciones)
-        registro=open("Registro.csv", "a")
-        registro.write(color_2.get()+";")
-        registro.write(fecha_hora_inicio_cambio.get()+";")
-        registro.write(fecha_hora_inicio_color.get()+";")
-        registro.write(fecha_hora_final_color.get()+";")
-        registro.write(bastidores_2.get()+";")
-        registro.write(observaciones_2.get()+"\n")
-        registro.close()
+        register=open("Registro.csv", "a")
+        register.write(colour_2.get()+";")
+        register.write(change_start_date_time.get()+";")
+        register.write(colour_start_date_time.get()+";")
+        register.write(colour_end_date_time.get()+";")
+        register.write(hangers_2.get()+";")
+        register.write(observations_2.get()+"\n")
+        register.close()
         
         # Eliminar el texto de las casillas que se completan
-        color_2.delete("0", "end")
-        fecha_hora_inicio_cambio.set("")
-        fecha_hora_inicio_color.set("")
-        fecha_hora_final_color.set("")
-        bastidores_2.delete("0", "end")
-        observaciones_2.delete("0", "end")
+        colour_2.delete("0", "end")
+        change_start_date_time.set("")
+        colour_start_date_time.set("")
+        colour_end_date_time.set("")
+        hangers_2.delete("0", "end")
+        observations_2.delete("0", "end")
         
     else:
-        if color_2.get()=="" or fecha_hora_inicio_cambio.get()=="" or fecha_hora_inicio_color.get()=="" or fecha_hora_final_color.get()=="" or bastidores_2.get()=="":
+        if colour_2.get()=="" or change_start_date_time.get()=="" or colour_start_date_time.get()=="" or colour_end_date_time.get()=="" or hangers_2.get()=="":
             messagebox.showerror(message="Faltan algún dato por completar", title="Algo no me cuadra...")
         
-        elif str(color_2.get()[0:9]) in lista_colores:
+        elif str(colour_2.get()[0:9]) in colour_list:
             return True
         else:
             messagebox.showerror(message="El color que se ha introducino no existe.\n\nPor favor, introduce un color válido y vuelve a registrar", title="Error en el color")
@@ -107,79 +107,79 @@ def registrar():
     # Imprimir en el historial.
     # Pasamos el archivo de los registros a una matriz        
     df=pd.read_csv("Registro.csv",";",header=None)
-    num_filas=len(df[0])
+    num_rows=len(df[0])
     
-    L00.set(num_filas)
-    L01.set(df[0][num_filas-1])
-    L02.set(df[1][num_filas-1][13:21])
-    L03.set(df[2][num_filas-1][13:21])
-    L04.set(df[3][num_filas-1][13:21])
-    L05.set(df[4][num_filas-1])
-    L06.set(df[5][num_filas-1])
+    L00.set(num_rows)
+    L01.set(df[0][num_rows-1])
+    L02.set(df[1][num_rows-1][13:21])
+    L03.set(df[2][num_rows-1][13:21])
+    L04.set(df[3][num_rows-1][13:21])
+    L05.set(df[4][num_rows-1])
+    L06.set(df[5][num_rows-1])
     
-    L10.set(num_filas-1)
-    L11.set(df[0][num_filas-2])
-    L12.set(df[1][num_filas-2][13:21])
-    L13.set(df[2][num_filas-2][13:21])
-    L14.set(df[3][num_filas-2][13:21])
-    L15.set(df[4][num_filas-2])
-    L16.set(df[5][num_filas-2])
+    L10.set(num_rows-1)
+    L11.set(df[0][num_rows-2])
+    L12.set(df[1][num_rows-2][13:21])
+    L13.set(df[2][num_rows-2][13:21])
+    L14.set(df[3][num_rows-2][13:21])
+    L15.set(df[4][num_rows-2])
+    L16.set(df[5][num_rows-2])
     
-    L20.set(num_filas-2)
-    L21.set(df[0][num_filas-3])
-    L22.set(df[1][num_filas-3][13:21])
-    L23.set(df[2][num_filas-3][13:21])
-    L24.set(df[3][num_filas-3][13:21])
-    L25.set(df[4][num_filas-3])
-    L26.set(df[5][num_filas-3])
+    L20.set(num_rows-2)
+    L21.set(df[0][num_rows-3])
+    L22.set(df[1][num_rows-3][13:21])
+    L23.set(df[2][num_rows-3][13:21])
+    L24.set(df[3][num_rows-3][13:21])
+    L25.set(df[4][num_rows-3])
+    L26.set(df[5][num_rows-3])
     
-    L30.set(num_filas-3)
-    L31.set(df[0][num_filas-4])
-    L32.set(df[1][num_filas-4][13:21])
-    L33.set(df[2][num_filas-4][13:21])
-    L34.set(df[3][num_filas-4][13:21])
-    L35.set(df[4][num_filas-4])
-    L36.set(df[5][num_filas-4])
+    L30.set(num_rows-3)
+    L31.set(df[0][num_rows-4])
+    L32.set(df[1][num_rows-4][13:21])
+    L33.set(df[2][num_rows-4][13:21])
+    L34.set(df[3][num_rows-4][13:21])
+    L35.set(df[4][num_rows-4])
+    L36.set(df[5][num_rows-4])
     
-    L40.set(num_filas-4)
-    L41.set(df[0][num_filas-5])
-    L42.set(df[1][num_filas-5][13:21])
-    L43.set(df[2][num_filas-5][13:21])
-    L44.set(df[3][num_filas-5][13:21])
-    L45.set(df[4][num_filas-5])
-    L46.set(df[5][num_filas-5])
+    L40.set(num_rows-4)
+    L41.set(df[0][num_rows-5])
+    L42.set(df[1][num_rows-5][13:21])
+    L43.set(df[2][num_rows-5][13:21])
+    L44.set(df[3][num_rows-5][13:21])
+    L45.set(df[4][num_rows-5])
+    L46.set(df[5][num_rows-5])
     
-    L50.set(num_filas-5)
-    L51.set(df[0][num_filas-6])
-    L52.set(df[1][num_filas-6][13:21])
-    L53.set(df[2][num_filas-6][13:21])
-    L54.set(df[3][num_filas-6][13:21])
-    L55.set(df[4][num_filas-6])
-    L56.set(df[5][num_filas-6])
+    L50.set(num_rows-5)
+    L51.set(df[0][num_rows-6])
+    L52.set(df[1][num_rows-6][13:21])
+    L53.set(df[2][num_rows-6][13:21])
+    L54.set(df[3][num_rows-6][13:21])
+    L55.set(df[4][num_rows-6])
+    L56.set(df[5][num_rows-6])
     
-    L60.set(num_filas-6)
-    L61.set(df[0][num_filas-7])
-    L62.set(df[1][num_filas-7][13:21])
-    L63.set(df[2][num_filas-7][13:21])
-    L64.set(df[3][num_filas-7][13:21])
-    L65.set(df[4][num_filas-7])
-    L66.set(df[5][num_filas-7])
+    L60.set(num_rows-6)
+    L61.set(df[0][num_rows-7])
+    L62.set(df[1][num_rows-7][13:21])
+    L63.set(df[2][num_rows-7][13:21])
+    L64.set(df[3][num_rows-7][13:21])
+    L65.set(df[4][num_rows-7])
+    L66.set(df[5][num_rows-7])
     
     """#L00.set(num_registro) No tengo ni idea de cómo hacer esto...
-    L01.set(color_2.get())
-    L02.set(fecha_hora_inicio_cambio.get())
-    L03.set(fecha_hora_inicio_color.get())
-    L04.set(fecha_hora_final_color.get())
-    L05.set(bastidores_2.get())
-    L06.set(observaciones_2.get())"""
+    L01.set(colour_2.get())
+    L02.set(change_start_date_time.get())
+    L03.set(colour_start_date_time.get())
+    L04.set(colour_end_date_time.get())
+    L05.set(hangers_2.get())
+    L06.set(observations_2.get())"""
     
 
 
-def cerrar():
+def close():
 
-    if color_2.get()=="" and fecha_hora_inicio_cambio.get()=="" and fecha_hora_inicio_color.get()=="" and fecha_hora_final_color.get()=="" and bastidores_2.get()=="" and observaciones_2.get()=="":
-        mensaje_cierre=messagebox.askquestion(message="¿Seguro que quieres salir?", title="Hasta otra!")
-        if mensaje_cierre=="yes":
+    if colour_2.get()=="" and change_start_date_time.get()=="" and colour_start_date_time.get()=="" and colour_end_date_time.get()=="" and hangers_2.get()=="" and observations_2.get()=="":
+        closing_message=messagebox.askquestion(message="¿Seguro que quieres salir?", title="Hasta otra!")
+        if closing_message=="yes":
             root.destroy()
         else:
             messagebox.showinfo(message="Ya te querías ir eh...venga, a currar!!")
@@ -204,12 +204,12 @@ root.geometry("790x630")
 #registros.config(width="150", height="150")
 #registros.place(x=100, y=150, width=100, heigh=100)
 
-num_registro=0 #Debería ser el número de registro más alto que tengamos en el excel, para que así al cerra y abrir puedan ser consecutivos.
+#registry_number=0 #Debería ser el número de registro más alto que tengamos en el excel, para que así al cerra y abrir puedan ser consecutivos.
 
 # Variables a utilizar.
-fecha_hora_inicio_cambio = StringVar()
-fecha_hora_inicio_color = StringVar()
-fecha_hora_final_color = StringVar()
+change_start_date_time = StringVar()
+colour_start_date_time = StringVar()
+colour_end_date_time = StringVar()
 
 # Definir las variables de cada una de las celdas del historial
 
@@ -270,39 +270,39 @@ L65=StringVar()
 L66=StringVar()
 
 # Registro de datos.
-color_1=Label(root, text="Color", anchor="center", relief="groove")
-color_1.place(x=10, y=10, width=120, heigh=30)
-color_2=Entry(root, justify="center", validate="key", validatecommand=(root.register(validacion_color), "%S", "%P"))
-color_2.place(x=10, y=50, width=120, heigh=30)
+colour_1=Label(root, text="Color", anchor="center", relief="groove")
+colour_1.place(x=10, y=10, width=120, heigh=30)
+colour_2=Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_colour), "%S", "%P"))
+colour_2.place(x=10, y=50, width=120, heigh=30)
 
-hora_ini_camb_1 = Button(root, text="Hora inicio cambio", command=hora_inicio_cambio)
-hora_ini_camb_1.place(x=140, y=10, width=120, heigh=30)
-hora_ini_camb_2 = Label(root, background="white", textvariable=fecha_hora_inicio_cambio)
-hora_ini_camb_2.place(x=140, y=50, width=120, heigh=30)
+change_start_time_1 = Button(root, text="Hora inicio cambio", command=change_start_time)
+change_start_time_1.place(x=140, y=10, width=120, heigh=30)
+change_start_time_2 = Label(root, background="white", textvariable=change_start_date_time)
+change_start_time_2.place(x=140, y=50, width=120, heigh=30)
 
-hora_ini_col_1 = Button(root, text="Hora inicio color", command=hora_inicio_color)
-hora_ini_col_1.place(x=270, y=10, width=120, heigh=30)
-hora_ini_col_2 = Label(root, background="white", textvariable=fecha_hora_inicio_color)
-hora_ini_col_2.place(x=270, y=50, width=120, heigh=30)
+colour_start_time_1 = Button(root, text="Hora inicio color", command=colour_start_time)
+colour_start_time_1.place(x=270, y=10, width=120, heigh=30)
+colour_start_time_2 = Label(root, background="white", textvariable=colour_start_date_time)
+colour_start_time_2.place(x=270, y=50, width=120, heigh=30)
 
-hora_fin_col_1 = Button(root, text="Hora final color", command=hora_final_color)
-hora_fin_col_1.place(x=400, y=10, width=120, heigh=30)
-hora_fin_col_2 = Label(root, background="white", textvariable=fecha_hora_final_color)
-hora_fin_col_2.place(x=400, y=50, width=120, heigh=30)
+colour_end_time_1 = Button(root, text="Hora final color", command=colour_end_time)
+colour_end_time_1.place(x=400, y=10, width=120, heigh=30)
+colour_end_time_2 = Label(root, background="white", textvariable=colour_end_date_time)
+colour_end_time_2.place(x=400, y=50, width=120, heigh=30)
 
-bastidores_1 = Label(root, text="Nº de bastidores", anchor="center", relief="groove")
-bastidores_1.place(x=530, y=10, width=120, heigh=30)
-bastidores_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validacion_bastidor), "%S", "%P"))
-bastidores_2.place(x=530, y=50, width=120, heigh=30)
+hangers_1 = Label(root, text="Nº de bastidores", anchor="center", relief="groove")
+hangers_1.place(x=530, y=10, width=120, heigh=30)
+hangers_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_hangers), "%S", "%P"))
+hangers_2.place(x=530, y=50, width=120, heigh=30)
 
-observaciones_1 = Label(root, text="Observaciones", anchor="center", relief="groove")
-observaciones_1.place(x=660, y=10, width=120, heigh=30)
-observaciones_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validacion_observaciones), "%P"))
-observaciones_2.place(x=660, y=50, width=120, heigh=30)
+observations_1 = Label(root, text="Observaciones", anchor="center", relief="groove")
+observations_1.place(x=660, y=10, width=120, heigh=30)
+observations_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_observations), "%P"))
+observations_2.place(x=660, y=50, width=120, heigh=30)
 
 # Variables de la posición de los cuadros de "Registrar" hacia abajo
 
-xregistrar = 295
+xregister = 295
 xhistorial = 10
 x1 = 10
 x2 = 70
@@ -313,8 +313,9 @@ x6 = x5+120
 x7 = x6+120
 xcerrar = 295
 
-yregistrar = 150
-ycabecera = 260
+yregister = 150
+yheadboard = 260
+yhistorial=225
 y1 = 295
 y2 = y1+35
 y3 = y2+35
@@ -322,36 +323,36 @@ y4 = y3+35
 y5 = y4+35
 y6 = y5+35
 y7 = y6+35
-ycerrar = 550
+yclose = 550
 
 # Botón Registrar
-registrar=Button(root, text="Registrar", activebackground="green", command=registrar)
-registrar.place(x=xregistrar, y=yregistrar, width=200, heigh=50)
+register=Button(root, text="Registrar", activebackground="green", command=register)
+register.place(x=xregister, y=yregister, width=200, heigh=50)
 
 # Historial de los registros anteriores.
 historial=Label(root, text="Historial de Registros", relief="sunken", background="cyan")
-historial.place(x=x1, y=175+50, width=770, heigh=30)
+historial.place(x=x1, y=yhistorial, width=770, heigh=30)
 
-num_registro=Label(root, text="Nº", relief="groove", background="cyan")
-num_registro.place(x=x1, y=ycabecera, width=50, heigh=30)
+registry_number=Label(root, text="Nº", relief="groove", background="cyan")
+registry_number.place(x=x1, y=yheadboard, width=50, heigh=30)
 
-color_3=Label(root, text="Color", relief="groove", background="cyan")
-color_3.place(x=x2, y=ycabecera, width=110, heigh=30)
+colour_3=Label(root, text="Color", relief="groove", background="cyan")
+colour_3.place(x=x2, y=yheadboard, width=110, heigh=30)
 
-hora_ini_camb_3=Label(root, text="Hora inicio cambio", relief="groove", background="cyan")
-hora_ini_camb_3.place(x=x3, y=ycabecera, width=110, heigh=30)
+change_start_time_3=Label(root, text="Hora inicio cambio", relief="groove", background="cyan")
+change_start_time_3.place(x=x3, y=yheadboard, width=110, heigh=30)
 
-hora_ini_col_3=Label(root, text="Hora inicio color", relief="groove", background="cyan")
-hora_ini_col_3.place(x=x4, y=ycabecera, width=110, heigh=30)
+colour_start_time_3=Label(root, text="Hora inicio color", relief="groove", background="cyan")
+colour_start_time_3.place(x=x4, y=yheadboard, width=110, heigh=30)
 
-hora_fin_col_3=Label(root, text="Hora final color", relief="groove", background="cyan")
-hora_fin_col_3.place(x=x5, y=ycabecera, width=110, heigh=30)
+colour_end_time_3=Label(root, text="Hora final color", relief="groove", background="cyan")
+colour_end_time_3.place(x=x5, y=yheadboard, width=110, heigh=30)
 
-bastidores_3=Label(root, text="Nº de bastidores", relief="groove", background="cyan")
-bastidores_3.place(x=x6, y=ycabecera, width=110, heigh=30)
+hangers_3=Label(root, text="Nº de bastidores", relief="groove", background="cyan")
+hangers_3.place(x=x6, y=yheadboard, width=110, heigh=30)
 
-observaciones_3=Label(root, text="Observaciones", relief="groove", background="cyan")
-observaciones_3.place(x=x7, y=ycabecera, width=110, heigh=30)
+observations_3=Label(root, text="Observaciones", relief="groove", background="cyan")
+observations_3.place(x=x7, y=yheadboard, width=110, heigh=30)
 
 #---------------------------------------------------------------------------
 
@@ -515,7 +516,7 @@ L_6_6=Label(root, background="white", textvariable=L66, relief="groove")
 L_6_6.place(x=x7, y=y7, width=110, heigh=30)
 
 # Botón para cerrar ventana
-cerrar=Button(root, text="Cerrar", activebackground="red", command=cerrar)
-cerrar.place(x=xcerrar, y=ycerrar, width=200, heigh=50)
+close=Button(root, text="Cerrar", activebackground="red", command=close)
+close.place(x=xcerrar, y=yclose, width=200, heigh=50)
 
 root.mainloop()
