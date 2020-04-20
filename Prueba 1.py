@@ -43,7 +43,7 @@ def validacion_bastidor(text, new_text):
     return text.isdecimal()
 
 
-def validacion_observaciones(text):
+def validacion_observaciones(new_text):
     if len(new_text)>50:
         return False
 
