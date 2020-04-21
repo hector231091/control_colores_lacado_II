@@ -221,17 +221,16 @@ def on_close_click():
 # por si ha habido algún error.
 
 root = tk.Tk()
-root.title("Registros")
+root.title("REGISTROS COLOERS LACADO II")
+
+
 root.resizable()
 root.geometry("790x630")
-# root.iconbitmap("Gaviota.ico")
-
-# registros=Frame(root, relief="sunken")
-# registros.pack(side="bottom")
-# registros.config(bg="blue")
-# registros.config(width="150", height="150")
-# registros.place(x=100, y=150, width=100, heigh=100)
-
+xroot=790
+yroot=630
+root.geometry(str(xroot)+"x"+str(yroot))
+root.iconbitmap("Gaviota.ico")
+root.state("zoomed")
 # registry_number=0 #Debería ser el número de registro más alto que tengamos en el excel, para que así al cerrar y abrir puedan ser consecutivos.
 
 # Variables a utilizar.
@@ -297,40 +296,10 @@ L64 = StringVar()
 L65 = StringVar()
 L66 = StringVar()
 
-# Registro de datos.
-colour_1 = Label(root, text="Color", anchor="center", relief="groove")
-colour_1.place(x=10, y=10, width=120, heigh=30)
-colour_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_colour), "%S", "%P"))
-colour_2.place(x=10, y=50, width=120, heigh=30)
-
-change_start_time_1 = Button(root, text="Hora inicio cambio", command=change_start_time)
-change_start_time_1.place(x=140, y=10, width=120, heigh=30)
-change_start_time_2 = Label(root, background="white", textvariable=change_start_date_time)
-change_start_time_2.place(x=140, y=50, width=120, heigh=30)
-
-colour_start_time_1 = Button(root, text="Hora inicio color", command=colour_start_time)
-colour_start_time_1.place(x=270, y=10, width=120, heigh=30)
-colour_start_time_2 = Label(root, background="white", textvariable=colour_start_date_time)
-colour_start_time_2.place(x=270, y=50, width=120, heigh=30)
-
-colour_end_time_1 = Button(root, text="Hora final color", command=colour_end_time)
-colour_end_time_1.place(x=400, y=10, width=120, heigh=30)
-colour_end_time_2 = Label(root, background="white", textvariable=colour_end_date_time)
-colour_end_time_2.place(x=400, y=50, width=120, heigh=30)
-
-hangers_1 = Label(root, text="Nº de bastidores", anchor="center", relief="groove")
-hangers_1.place(x=530, y=10, width=120, heigh=30)
-hangers_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_hangers), "%S", "%P"))
-hangers_2.place(x=530, y=50, width=120, heigh=30)
-
-observations_1 = Label(root, text="Observaciones", anchor="center", relief="groove")
-observations_1.place(x=660, y=10, width=120, heigh=30)
-observations_2 = Entry(root, justify="center", validate="key",
-                       validatecommand=(root.register(validate_observations), "%P"))
-observations_2.place(x=660, y=50, width=120, heigh=30)
+#
 
 # Variables de la posición de los cuadros de "Registrar" hacia abajo
-
+xmargin = 10
 xregister = 295
 xhistorial = 10
 x1 = 10
@@ -354,198 +323,207 @@ y6 = y5 + 35
 y7 = y6 + 35
 yclose = 550
 
+# Registro de datos.
+colour_1 = Label(root, text="Color", anchor="center", relief="groove")
+colour_1.place(x=xmargin, y=10, relwidth=120/xroot, heigh=30)
+colour_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_colour), "%S", "%P"))
+colour_2.place(x=xmargin, y=50, relwidth=120/xroot, heigh=30)
+
+change_start_time_1 = Button(root, text="Hora inicio cambio", command=change_start_time)
+change_start_time_1.place(relx=140/xroot, y=10, relwidth=120/xroot, heigh=30)
+change_start_time_2 = Label(root, background="white", textvariable=change_start_date_time)
+change_start_time_2.place(relx=140/xroot, y=50, relwidth=120/xroot, heigh=30)
+
+colour_start_time_1 = Button(root, text="Hora inicio color", command=colour_start_time)
+colour_start_time_1.place(relx=270/xroot, y=10, relwidth=120/xroot, heigh=30)
+colour_start_time_2 = Label(root, background="white", textvariable=colour_start_date_time)
+colour_start_time_2.place(relx=270/xroot, y=50, relwidth=120/xroot, heigh=30)
+
+colour_end_time_1 = Button(root, text="Hora final color", command=colour_end_time)
+colour_end_time_1.place(relx=400/xroot, y=10, relwidth=120/xroot, heigh=30)
+colour_end_time_2 = Label(root, background="white", textvariable=colour_end_date_time)
+colour_end_time_2.place(relx=400/xroot, y=50, relwidth=120/xroot, heigh=30)
+
+hangers_1 = Label(root, text="Nº de bastidores", anchor="center", relief="groove")
+hangers_1.place(relx=530/xroot, y=10, relwidth=120/xroot, heigh=30)
+hangers_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_hangers), "%S", "%P"))
+hangers_2.place(relx=530/xroot, y=50, relwidth=120/xroot, heigh=30)
+
+observations_1 = Label(root, text="Observaciones", anchor="center", relief="groove")
+observations_1.place(relx=660/xroot, y=10, relwidth=120/xroot, heigh=30)
+observations_2 = Entry(root, justify="center", validate="key",
+                       validatecommand=(root.register(validate_observations), "%P"))
+observations_2.place(relx=660/xroot, y=50, relwidth=120/xroot, heigh=30)
+
 # Botón Registrar
 register = Button(root, text="Registrar", activebackground="green", command=on_register_button_click)
-register.place(x=xregister, y=yregister, width=200, heigh=50)
+register.place(relx=xregister/xroot, rely=yregister/yroot, relwidth=200/xroot, heigh=50)
 
 # Historial de los registros anteriores.
 historial = Label(root, text="Historial de Registros", relief="sunken", background="cyan")
-historial.place(x=x1, y=yhistorial, width=770, heigh=30)
+historial.place(x=xmargin, y=yhistorial, relwidth=775/xroot, heigh=30)
 
 registry_number = Label(root, text="Nº", relief="groove", background="cyan")
-registry_number.place(x=x1, y=yheadboard, width=50, heigh=30)
+registry_number.place(x=xmargin, y=yheadboard, relwidth=50/xroot, heigh=30)
 
 colour_3 = Label(root, text="Color", relief="groove", background="cyan")
-colour_3.place(x=x2, y=yheadboard, width=110, heigh=30)
+colour_3.place(relx=x2/xroot, y=yheadboard, relwidth=110/xroot, heigh=30)
 
 change_start_time_3 = Label(root, text="Hora inicio cambio", relief="groove", background="cyan")
-change_start_time_3.place(x=x3, y=yheadboard, width=110, heigh=30)
+change_start_time_3.place(relx=x3/xroot, y=yheadboard, relwidth=110/xroot, heigh=30)
 
 colour_start_time_3 = Label(root, text="Hora inicio color", relief="groove", background="cyan")
-colour_start_time_3.place(x=x4, y=yheadboard, width=110, heigh=30)
+colour_start_time_3.place(relx=x4/xroot, y=yheadboard, relwidth=110/xroot, heigh=30)
 
 colour_end_time_3 = Label(root, text="Hora final color", relief="groove", background="cyan")
-colour_end_time_3.place(x=x5, y=yheadboard, width=110, heigh=30)
+colour_end_time_3.place(relx=x5/xroot, y=yheadboard, relwidth=110/xroot, heigh=30)
 
 hangers_3 = Label(root, text="Nº de bastidores", relief="groove", background="cyan")
-hangers_3.place(x=x6, y=yheadboard, width=110, heigh=30)
+hangers_3.place(relx=x6/xroot, y=yheadboard, relwidth=110/xroot, heigh=30)
 
 observations_3 = Label(root, text="Observaciones", relief="groove", background="cyan")
-observations_3.place(x=x7, y=yheadboard, width=110, heigh=30)
+observations_3.place(relx=x7/xroot, y=yheadboard, relwidth=110/xroot, heigh=30)
 
 # ---------------------------------------------------------------------------
 
 L_0_0 = Label(root, background="white", textvariable=L00, relief="groove")
-L_0_0.place(x=x1, y=y1, width=50, heigh=30)
+L_0_0.place(x=xmargin, y=y1, relwidth=50/xroot, heigh=30)
 
 L_0_1 = Label(root, background="white", textvariable=L01, relief="groove")
-L_0_1.place(x=x2, y=y1, width=110, heigh=30)
+L_0_1.place(relx=x2/xroot, y=y1, relwidth=110/xroot, heigh=30)
 
 L_0_2 = Label(root, background="white", textvariable=L02, relief="groove")
-L_0_2.place(x=x3, y=y1, width=110, heigh=30)
+L_0_2.place(relx=x3/xroot, y=y1, relwidth=110/xroot, heigh=30)
 
 L_0_3 = Label(root, background="white", textvariable=L03, relief="groove")
-L_0_3.place(x=x4, y=y1, width=110, heigh=30)
+L_0_3.place(relx=x4/xroot, y=y1, relwidth=110/xroot, heigh=30)
 
 L_0_4 = Label(root, background="white", textvariable=L04, relief="groove")
-L_0_4.place(x=x5, y=y1, width=110, heigh=30)
+L_0_4.place(relx=x5/xroot, y=y1, relwidth=110/xroot, heigh=30)
 
 L_0_5 = Label(root, background="white", textvariable=L05, relief="groove")
-L_0_5.place(x=x6, y=y1, width=110, heigh=30)
+L_0_5.place(relx=x6/xroot, y=y1, relwidth=110/xroot, heigh=30)
 
 L_0_6 = Label(root, background="white", textvariable=L06, relief="groove")
-L_0_6.place(x=x7, y=y1, width=110, heigh=30)
+L_0_6.place(relx=x7/xroot, y=y1, relwidth=110/xroot, heigh=30)
 
 # ---------------------------------------------------------------------------
 
 L_1_0 = Label(root, background="white", textvariable=L10, relief="groove")
-L_1_0.place(x=x1, y=y2, width=50, heigh=30)
+L_1_0.place(x=xmargin, y=y2, relwidth=50/xroot, heigh=30)
 
 L_1_1 = Label(root, background="white", textvariable=L11, relief="groove")
-L_1_1.place(x=x2, y=y2, width=110, heigh=30)
+L_1_1.place(relx=x2/xroot, y=y2, relwidth=110/xroot, heigh=30)
 
 L_1_2 = Label(root, background="white", textvariable=L12, relief="groove")
-L_1_2.place(x=x3, y=y2, width=110, heigh=30)
+L_1_2.place(relx=x3/xroot, y=y2, relwidth=110/xroot, heigh=30)
 
 L_1_3 = Label(root, background="white", textvariable=L13, relief="groove")
-L_1_3.place(x=x4, y=y2, width=110, heigh=30)
+L_1_3.place(relx=x4/xroot, y=y2, relwidth=110/xroot, heigh=30)
 
 L_1_4 = Label(root, background="white", textvariable=L14, relief="groove")
-L_1_4.place(x=x5, y=y2, width=110, heigh=30)
+L_1_4.place(relx=x5/xroot, y=y2, relwidth=110/xroot, heigh=30)
 
 L_1_5 = Label(root, background="white", textvariable=L15, relief="groove")
-L_1_5.place(x=x6, y=y2, width=110, heigh=30)
+L_1_5.place(relx=x6/xroot, y=y2, relwidth=110/xroot, heigh=30)
 
 L_1_6 = Label(root, background="white", textvariable=L16, relief="groove")
-L_1_6.place(x=x7, y=y2, width=110, heigh=30)
+L_1_6.place(relx=x7/xroot, y=y2, relwidth=110/xroot, heigh=30)
 
 # ---------------------------------------------------------------------------
 
 L_2_0 = Label(root, background="white", textvariable=L20, relief="groove")
-L_2_0.place(x=x1, y=y3, width=50, heigh=30)
+L_2_0.place(x=xmargin, y=y3, relwidth=50/xroot, heigh=30)
 
 L_2_1 = Label(root, background="white", textvariable=L21, relief="groove")
-L_2_1.place(x=x2, y=y3, width=110, heigh=30)
+L_2_1.place(relx=x2/xroot, y=y3, relwidth=110/xroot, heigh=30)
 
 L_2_2 = Label(root, background="white", textvariable=L22, relief="groove")
-L_2_2.place(x=x3, y=y3, width=110, heigh=30)
+L_2_2.place(relx=x3/xroot, y=y3, relwidth=110/xroot, heigh=30)
 
 L_2_3 = Label(root, background="white", textvariable=L23, relief="groove")
-L_2_3.place(x=x4, y=y3, width=110, heigh=30)
+L_2_3.place(relx=x4/xroot, y=y3, relwidth=110/xroot, heigh=30)
 
 L_2_4 = Label(root, background="white", textvariable=L24, relief="groove")
-L_2_4.place(x=x5, y=y3, width=110, heigh=30)
+L_2_4.place(relx=x5/xroot, y=y3, relwidth=110/xroot, heigh=30)
 
 L_2_5 = Label(root, background="white", textvariable=L25, relief="groove")
-L_2_5.place(x=x6, y=y3, width=110, heigh=30)
+L_2_5.place(relx=x6/xroot, y=y3, relwidth=110/xroot, heigh=30)
 
 L_2_6 = Label(root, background="white", textvariable=L26, relief="groove")
-L_2_6.place(x=x7, y=y3, width=110, heigh=30)
+L_2_6.place(relx=x7/xroot, y=y3, relwidth=110/xroot, heigh=30)
 
 # ---------------------------------------------------------------------------
 
 L_3_0 = Label(root, background="white", textvariable=L30, relief="groove")
-L_3_0.place(x=x1, y=y4, width=50, heigh=30)
+L_3_0.place(x=xmargin, y=y4, relwidth=50/xroot, heigh=30)
 
 L_3_1 = Label(root, background="white", textvariable=L31, relief="groove")
-L_3_1.place(x=x2, y=y4, width=110, heigh=30)
+L_3_1.place(relx=x2/xroot, y=y4, relwidth=110/xroot, heigh=30)
 
 L_3_2 = Label(root, background="white", textvariable=L32, relief="groove")
-L_3_2.place(x=x3, y=y4, width=110, heigh=30)
+L_3_2.place(relx=x3/xroot, y=y4, relwidth=110/xroot, heigh=30)
 
 L_3_3 = Label(root, background="white", textvariable=L33, relief="groove")
-L_3_3.place(x=x4, y=y4, width=110, heigh=30)
+L_3_3.place(relx=x4/xroot, y=y4, relwidth=110/xroot, heigh=30)
 
 L_3_4 = Label(root, background="white", textvariable=L34, relief="groove")
-L_3_4.place(x=x5, y=y4, width=110, heigh=30)
+L_3_4.place(relx=x5/xroot, y=y4, relwidth=110/xroot, heigh=30)
 
 L_3_5 = Label(root, background="white", textvariable=L35, relief="groove")
-L_3_5.place(x=x6, y=y4, width=110, heigh=30)
+L_3_5.place(relx=x6/xroot, y=y4, relwidth=110/xroot, heigh=30)
 
 L_3_6 = Label(root, background="white", textvariable=L36, relief="groove")
-L_3_6.place(x=x7, y=y4, width=110, heigh=30)
+L_3_6.place(relx=x7/xroot, y=y4, relwidth=110/xroot, heigh=30)
 
 # ---------------------------------------------------------------------------
 
 L_4_0 = Label(root, background="white", textvariable=L40, relief="groove")
-L_4_0.place(x=x1, y=y5, width=50, heigh=30)
+L_4_0.place(x=xmargin, y=y5, relwidth=50/xroot, heigh=30)
 
 L_4_1 = Label(root, background="white", textvariable=L41, relief="groove")
-L_4_1.place(x=x2, y=y5, width=110, heigh=30)
+L_4_1.place(relx=x2/xroot, y=y5, relwidth=110/xroot, heigh=30)
 
 L_4_2 = Label(root, background="white", textvariable=L42, relief="groove")
-L_4_2.place(x=x3, y=y5, width=110, heigh=30)
+L_4_2.place(relx=x3/xroot, y=y5, relwidth=110/xroot, heigh=30)
 
 L_4_3 = Label(root, background="white", textvariable=L43, relief="groove")
-L_4_3.place(x=x4, y=y5, width=110, heigh=30)
+L_4_3.place(relx=x4/xroot, y=y5, relwidth=110/xroot, heigh=30)
 
 L_4_4 = Label(root, background="white", textvariable=L44, relief="groove")
-L_4_4.place(x=x5, y=y5, width=110, heigh=30)
+L_4_4.place(relx=x5/xroot, y=y5, relwidth=110/xroot, heigh=30)
 
 L_4_5 = Label(root, background="white", textvariable=L45, relief="groove")
-L_4_5.place(x=x6, y=y5, width=110, heigh=30)
+L_4_5.place(relx=x6/xroot, y=y5, relwidth=110/xroot, heigh=30)
 
 L_4_6 = Label(root, background="white", textvariable=L46, relief="groove")
-L_4_6.place(x=x7, y=y5, width=110, heigh=30)
+L_4_6.place(relx=x7/xroot, y=y5, relwidth=110/xroot, heigh=30)
 
 # ---------------------------------------------------------------------------
 
 L_5_0 = Label(root, background="white", textvariable=L50, relief="groove")
-L_5_0.place(x=x1, y=y6, width=50, heigh=30)
+L_5_0.place(x=xmargin, y=y6, relwidth=50/xroot, heigh=30)
 
 L_5_1 = Label(root, background="white", textvariable=L51, relief="groove")
-L_5_1.place(x=x2, y=y6, width=110, heigh=30)
+L_5_1.place(relx=x2/xroot, y=y6, relwidth=110/xroot, heigh=30)
 
 L_5_2 = Label(root, background="white", textvariable=L52, relief="groove")
-L_5_2.place(x=x3, y=y6, width=110, heigh=30)
+L_5_2.place(relx=x3/xroot, y=y6, relwidth=110/xroot, heigh=30)
 
 L_5_3 = Label(root, background="white", textvariable=L53, relief="groove")
-L_5_3.place(x=x4, y=y6, width=110, heigh=30)
+L_5_3.place(relx=x4/xroot, y=y6, relwidth=110/xroot, heigh=30)
 
 L_5_4 = Label(root, background="white", textvariable=L54, relief="groove")
-L_5_4.place(x=x5, y=y6, width=110, heigh=30)
+L_5_4.place(relx=x5/xroot, y=y6, relwidth=110/xroot, heigh=30)
 
 L_5_5 = Label(root, background="white", textvariable=L55, relief="groove")
-L_5_5.place(x=x6, y=y6, width=110, heigh=30)
+L_5_5.place(relx=x6/xroot, y=y6, relwidth=110/xroot, heigh=30)
 
 L_5_6 = Label(root, background="white", textvariable=L56, relief="groove")
-L_5_6.place(x=x7, y=y6, width=110, heigh=30)
-
-# ---------------------------------------------------------------------------
-
-L_6_0 = Label(root, background="white", textvariable=L60, relief="groove")
-L_6_0.place(x=x1, y=y7, width=50, heigh=30)
-
-L_6_1 = Label(root, background="white", textvariable=L61, relief="groove")
-L_6_1.place(x=x2, y=y7, width=110, heigh=30)
-
-L_6_2 = Label(root, background="white", textvariable=L62, relief="groove")
-L_6_2.place(x=x3, y=y7, width=110, heigh=30)
-
-L_6_3 = Label(root, background="white", textvariable=L63, relief="groove")
-L_6_3.place(x=x4, y=y7, width=110, heigh=30)
-
-L_6_4 = Label(root, background="white", textvariable=L64, relief="groove")
-L_6_4.place(x=x5, y=y7, width=110, heigh=30)
-
-L_6_5 = Label(root, background="white", textvariable=L65, relief="groove")
-L_6_5.place(x=x6, y=y7, width=110, heigh=30)
-
-L_6_6 = Label(root, background="white", textvariable=L66, relief="groove")
-L_6_6.place(x=x7, y=y7, width=110, heigh=30)
+L_5_6.place(relx=x7/xroot, y=y6, relwidth=110/xroot, heigh=30)
 
 # Botón para cerrar ventana
 close = Button(root, text="Cerrar", activebackground="red", command=on_close_click)
-close.place(x=xcerrar, y=yclose, width=200, heigh=50)
+close.place(relx=xcerrar/xroot, y=yclose, relwidth=200/xroot, heigh=50)
 
 root.mainloop()
