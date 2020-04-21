@@ -46,6 +46,15 @@ def validate_observations(new_text):
         return False
 
 
+def generate_input_to_register():
+    return colour_2.get() + ";" + \
+           change_start_date_time.get() + ";" + \
+           colour_start_date_time.get() + ";" + \
+           colour_end_date_time.get() + ";" + \
+           hangers_2.get() + ";" + \
+           observations_2.get() + "\n"
+
+
 def register():
     # Cargar todos los colores en una lista.
     with open("Colores.csv", "r") as colour:
@@ -75,12 +84,7 @@ def register():
         # en caso de que no está hacerlo nuevo poniéndole el encabezado (nº registro, colores, hora inicio cambio,
         # hora inicio color, hora fin, bastidores y observaciones)
         register = open("Registro.csv", "a")
-        register.write(colour_2.get() + ";")
-        register.write(change_start_date_time.get() + ";")
-        register.write(colour_start_date_time.get() + ";")
-        register.write(colour_end_date_time.get() + ";")
-        register.write(hangers_2.get() + ";")
-        register.write(observations_2.get() + "\n")
+        register.write(generate_input_to_register())
         register.close()
 
         # Eliminar el texto de las casillas que se completan
