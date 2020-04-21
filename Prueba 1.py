@@ -202,18 +202,17 @@ def on_register_button_click():
         print_history()
 
 
-def close():
+def on_close_click():
     if colour_2.get() == "" and change_start_date_time.get() == "" and colour_start_date_time.get() == "" and colour_end_date_time.get() == "" and hangers_2.get() == "" and observations_2.get() == "":
-        closing_message = messagebox.askquestion(message="¿Seguro que quieres salir?", title="Hasta otra!")
+        closing_message = messagebox.askquestion(message="¿Seguro que quieres salir?", title="Cierre del programa")
         if closing_message == "yes":
             root.destroy()
         else:
             messagebox.showinfo(message="Ya te querías ir eh...venga, a currar!!")
     else:
-
         messagebox.showerror(
             message="Para poder salir debes registrar todos los datos o borrarlos.\n\nNo te habrás dejado algo por registrar verdad...??",
-            title="Algo no está bien...")
+            title="Cierre del programa")
 
 
 # Mostrar todas las líneas que se han introducido por la pantalla.
@@ -546,7 +545,7 @@ L_6_6 = Label(root, background="white", textvariable=L66, relief="groove")
 L_6_6.place(x=x7, y=y7, width=110, heigh=30)
 
 # Botón para cerrar ventana
-close = Button(root, text="Cerrar", activebackground="red", command=close)
+close = Button(root, text="Cerrar", activebackground="red", command=on_close_click)
 close.place(x=xcerrar, y=yclose, width=200, heigh=50)
 
 root.mainloop()
