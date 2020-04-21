@@ -7,6 +7,10 @@ from tkinter import messagebox
 
 import pandas as pd
 
+# Constantes
+REGISTRY_FILE_NAME = "Registro.csv"
+COLOURS_FILE_NAME = "Colores.csv"
+
 
 def validate_colour(text, new_text):
     if len(new_text) > 8:
@@ -59,7 +63,7 @@ def register_input():
     # Registrar en el archivo. Falta ponerle en número del registro. Falta comprobar si está el archivo,
     # en caso de que no está hacerlo nuevo poniéndole el encabezado (nº registro, colores, hora inicio cambio,
     # hora inicio color, hora fin, bastidores y observaciones)
-    registry_file = open("Registro.csv", "a")
+    registry_file = open(REGISTRY_FILE_NAME, "a")
     registry_file.write(generate_input_to_register())
     registry_file.close()
 
@@ -75,7 +79,7 @@ def clear_input():
 
 
 def load_colours():
-    with open("Colores.csv", "r") as colour:
+    with open(COLOURS_FILE_NAME, "r") as colour:
         lines = reader(colour)
         header = next(lines)
 
@@ -91,7 +95,78 @@ def load_colours():
     return colour_list
 
 
-def register():
+def print_history():
+    # Imprimir en el historial.
+    # Pasamos el archivo de los registros a una matriz
+    registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
+    num_rows = len(registry_file[0])
+
+    L00.set(num_rows)
+    L01.set(registry_file[0][num_rows - 1])
+    L02.set(registry_file[1][num_rows - 1][13:21])
+    L03.set(registry_file[2][num_rows - 1][13:21])
+    L04.set(registry_file[3][num_rows - 1][13:21])
+    L05.set(registry_file[4][num_rows - 1])
+    L06.set(registry_file[5][num_rows - 1])
+
+    L10.set(num_rows - 1)
+    L11.set(registry_file[0][num_rows - 2])
+    L12.set(registry_file[1][num_rows - 2][13:21])
+    L13.set(registry_file[2][num_rows - 2][13:21])
+    L14.set(registry_file[3][num_rows - 2][13:21])
+    L15.set(registry_file[4][num_rows - 2])
+    L16.set(registry_file[5][num_rows - 2])
+
+    L20.set(num_rows - 2)
+    L21.set(registry_file[0][num_rows - 3])
+    L22.set(registry_file[1][num_rows - 3][13:21])
+    L23.set(registry_file[2][num_rows - 3][13:21])
+    L24.set(registry_file[3][num_rows - 3][13:21])
+    L25.set(registry_file[4][num_rows - 3])
+    L26.set(registry_file[5][num_rows - 3])
+
+    L30.set(num_rows - 3)
+    L31.set(registry_file[0][num_rows - 4])
+    L32.set(registry_file[1][num_rows - 4][13:21])
+    L33.set(registry_file[2][num_rows - 4][13:21])
+    L34.set(registry_file[3][num_rows - 4][13:21])
+    L35.set(registry_file[4][num_rows - 4])
+    L36.set(registry_file[5][num_rows - 4])
+
+    L40.set(num_rows - 4)
+    L41.set(registry_file[0][num_rows - 5])
+    L42.set(registry_file[1][num_rows - 5][13:21])
+    L43.set(registry_file[2][num_rows - 5][13:21])
+    L44.set(registry_file[3][num_rows - 5][13:21])
+    L45.set(registry_file[4][num_rows - 5])
+    L46.set(registry_file[5][num_rows - 5])
+
+    L50.set(num_rows - 5)
+    L51.set(registry_file[0][num_rows - 6])
+    L52.set(registry_file[1][num_rows - 6][13:21])
+    L53.set(registry_file[2][num_rows - 6][13:21])
+    L54.set(registry_file[3][num_rows - 6][13:21])
+    L55.set(registry_file[4][num_rows - 6])
+    L56.set(registry_file[5][num_rows - 6])
+
+    L60.set(num_rows - 6)
+    L61.set(registry_file[0][num_rows - 7])
+    L62.set(registry_file[1][num_rows - 7][13:21])
+    L63.set(registry_file[2][num_rows - 7][13:21])
+    L64.set(registry_file[3][num_rows - 7][13:21])
+    L65.set(registry_file[4][num_rows - 7])
+    L66.set(registry_file[5][num_rows - 7])
+
+    """#L00.set(num_registro) No tengo ni idea de cómo hacer esto...
+        L01.set(colour_2.get())
+        L02.set(change_start_date_time.get())
+        L03.set(colour_start_date_time.get())
+        L04.set(colour_end_date_time.get())
+        L05.set(hangers_2.get())
+        L06.set(observations_2.get())"""
+
+
+def on_register_button_click():
     # Cargar todos los colores en una lista.
     colour_list = load_colours()
 
@@ -102,93 +177,29 @@ def register():
                      colour_end_date_time.get() != "" \
                      and hangers_2.get() != ""
 
-    if colour_2.get() == "OTRO" and observations_2.get() == "":
-        messagebox.showerror(message="Si no me pones el color...ponlo en las observaciones :)",
-                             title="Falta poner el color en las observaciones")
+    is_any_input_empty = colour_2.get() == "" or \
+                         change_start_date_time.get() == "" or \
+                         colour_start_date_time.get() == "" or \
+                         colour_end_date_time.get() == "" or \
+                         hangers_2.get() == ""
+
+    # TODO: la validación hay que re-comprobarla para no dejar ningún caso atrás
+    if str(colour_2.get()[0:9]) not in colour_list:
+        if colour_2.get() == "OTRO" and observations_2.get() == "":
+            messagebox.showerror(message="Si no me pones el color... ponlo en las observaciones :)",
+                                 title="Falta poner el color en las observaciones")
+        else:
+            messagebox.showerror(message="El color que se ha introducido no existe.\n\n"
+                                         "Por favor, introduce un color válido y vuelve a registrar.",
+                                 title="Color inválido")
+
+    elif is_any_input_empty:
+        messagebox.showerror(message="Faltan algún dato por completar", title="Algo no me cuadra...")
 
     elif is_input_valid:
         register_input()
         clear_input()
-
-    else:
-        if colour_2.get() == "" or change_start_date_time.get() == "" or colour_start_date_time.get() == "" or colour_end_date_time.get() == "" or hangers_2.get() == "":
-            messagebox.showerror(message="Faltan algún dato por completar", title="Algo no me cuadra...")
-
-        elif str(colour_2.get()[0:9]) in colour_list:
-            return True
-        else:
-            messagebox.showerror(
-                message="El color que se ha introducido no existe.\n\nPor favor, introduce un color válido y vuelve a registrar",
-                title="Error en el color")
-
-    # Imprimir en el historial.
-    # Pasamos el archivo de los registros a una matriz        
-    df = pd.read_csv("Registro.csv", ";", header=None)
-    num_rows = len(df[0])
-
-    L00.set(num_rows)
-    L01.set(df[0][num_rows - 1])
-    L02.set(df[1][num_rows - 1][13:21])
-    L03.set(df[2][num_rows - 1][13:21])
-    L04.set(df[3][num_rows - 1][13:21])
-    L05.set(df[4][num_rows - 1])
-    L06.set(df[5][num_rows - 1])
-
-    L10.set(num_rows - 1)
-    L11.set(df[0][num_rows - 2])
-    L12.set(df[1][num_rows - 2][13:21])
-    L13.set(df[2][num_rows - 2][13:21])
-    L14.set(df[3][num_rows - 2][13:21])
-    L15.set(df[4][num_rows - 2])
-    L16.set(df[5][num_rows - 2])
-
-    L20.set(num_rows - 2)
-    L21.set(df[0][num_rows - 3])
-    L22.set(df[1][num_rows - 3][13:21])
-    L23.set(df[2][num_rows - 3][13:21])
-    L24.set(df[3][num_rows - 3][13:21])
-    L25.set(df[4][num_rows - 3])
-    L26.set(df[5][num_rows - 3])
-
-    L30.set(num_rows - 3)
-    L31.set(df[0][num_rows - 4])
-    L32.set(df[1][num_rows - 4][13:21])
-    L33.set(df[2][num_rows - 4][13:21])
-    L34.set(df[3][num_rows - 4][13:21])
-    L35.set(df[4][num_rows - 4])
-    L36.set(df[5][num_rows - 4])
-
-    L40.set(num_rows - 4)
-    L41.set(df[0][num_rows - 5])
-    L42.set(df[1][num_rows - 5][13:21])
-    L43.set(df[2][num_rows - 5][13:21])
-    L44.set(df[3][num_rows - 5][13:21])
-    L45.set(df[4][num_rows - 5])
-    L46.set(df[5][num_rows - 5])
-
-    L50.set(num_rows - 5)
-    L51.set(df[0][num_rows - 6])
-    L52.set(df[1][num_rows - 6][13:21])
-    L53.set(df[2][num_rows - 6][13:21])
-    L54.set(df[3][num_rows - 6][13:21])
-    L55.set(df[4][num_rows - 6])
-    L56.set(df[5][num_rows - 6])
-
-    L60.set(num_rows - 6)
-    L61.set(df[0][num_rows - 7])
-    L62.set(df[1][num_rows - 7][13:21])
-    L63.set(df[2][num_rows - 7][13:21])
-    L64.set(df[3][num_rows - 7][13:21])
-    L65.set(df[4][num_rows - 7])
-    L66.set(df[5][num_rows - 7])
-
-    """#L00.set(num_registro) No tengo ni idea de cómo hacer esto...
-    L01.set(colour_2.get())
-    L02.set(change_start_date_time.get())
-    L03.set(colour_start_date_time.get())
-    L04.set(colour_end_date_time.get())
-    L05.set(hangers_2.get())
-    L06.set(observations_2.get())"""
+        print_history()
 
 
 def close():
@@ -345,7 +356,7 @@ y7 = y6 + 35
 yclose = 550
 
 # Botón Registrar
-register = Button(root, text="Registrar", activebackground="green", command=register)
+register = Button(root, text="Registrar", activebackground="green", command=on_register_button_click)
 register.place(x=xregister, y=yregister, width=200, heigh=50)
 
 # Historial de los registros anteriores.
