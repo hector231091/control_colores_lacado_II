@@ -55,8 +55,26 @@ def generate_input_to_register():
            observations_2.get() + "\n"
 
 
-def register():
-    # Cargar todos los colores en una lista.
+def register_input():
+    # Registrar en el archivo. Falta ponerle en número del registro. Falta comprobar si está el archivo,
+    # en caso de que no está hacerlo nuevo poniéndole el encabezado (nº registro, colores, hora inicio cambio,
+    # hora inicio color, hora fin, bastidores y observaciones)
+    registry_file = open("Registro.csv", "a")
+    registry_file.write(generate_input_to_register())
+    registry_file.close()
+
+
+def clear_input():
+    # Eliminar el texto de las casillas que se completan
+    colour_2.delete("0", "end")
+    change_start_date_time.set("")
+    colour_start_date_time.set("")
+    colour_end_date_time.set("")
+    hangers_2.delete("0", "end")
+    observations_2.delete("0", "end")
+
+
+def load_colours():
     with open("Colores.csv", "r") as colour:
         lines = reader(colour)
         header = next(lines)
@@ -67,33 +85,30 @@ def register():
         for line in colour:
             # lista_colores.append(linea)
             colour_list.append(line[0:8])
-
     # Añadir la palabra FIN a la lista de los colores
     colour_list.append("FIN")
     colour_list.append("OTRO")
+    return colour_list
+
+
+def register():
+    # Cargar todos los colores en una lista.
+    colour_list = load_colours()
+
+    is_input_valid = str(colour_2.get()[0:9]) in colour_list and \
+                     colour_2.get() != "" and \
+                     change_start_date_time.get() != "" and \
+                     colour_start_date_time.get() != "" and \
+                     colour_end_date_time.get() != "" \
+                     and hangers_2.get() != ""
 
     if colour_2.get() == "OTRO" and observations_2.get() == "":
         messagebox.showerror(message="Si no me pones el color...ponlo en las observaciones :)",
                              title="Falta poner el color en las observaciones")
 
-    elif str(colour_2.get()[
-             0:9]) in colour_list and colour_2.get() != "" and change_start_date_time.get() != "" and colour_start_date_time.get() != "" and colour_end_date_time.get() != "" and hangers_2.get() != "":
-        # elif colour_2.get()!="" and change_start_date_time.get()!="" and colour_start_date_time.get()!="" and colour_end_date_time.get()!="" and hangers_2.get()!="":
-
-        # Registrar en el archivo. Falta ponerle en número del registro. Falta comprobar si está el archivo,
-        # en caso de que no está hacerlo nuevo poniéndole el encabezado (nº registro, colores, hora inicio cambio,
-        # hora inicio color, hora fin, bastidores y observaciones)
-        register = open("Registro.csv", "a")
-        register.write(generate_input_to_register())
-        register.close()
-
-        # Eliminar el texto de las casillas que se completan
-        colour_2.delete("0", "end")
-        change_start_date_time.set("")
-        colour_start_date_time.set("")
-        colour_end_date_time.set("")
-        hangers_2.delete("0", "end")
-        observations_2.delete("0", "end")
+    elif is_input_valid:
+        register_input()
+        clear_input()
 
     else:
         if colour_2.get() == "" or change_start_date_time.get() == "" or colour_start_date_time.get() == "" or colour_end_date_time.get() == "" or hangers_2.get() == "":
@@ -103,7 +118,7 @@ def register():
             return True
         else:
             messagebox.showerror(
-                message="El color que se ha introducino no existe.\n\nPor favor, introduce un color válido y vuelve a registrar",
+                message="El color que se ha introducido no existe.\n\nPor favor, introduce un color válido y vuelve a registrar",
                 title="Error en el color")
 
     # Imprimir en el historial.
