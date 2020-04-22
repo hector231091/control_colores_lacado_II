@@ -4,6 +4,7 @@ from csv import reader
 from datetime import datetime
 from tkinter import *
 from tkinter import messagebox
+import tk_tools
 
 import pandas as pd
 
@@ -15,34 +16,35 @@ COLOURS_FILE_NAME = "Colores.csv"
 def validate_colour(text, new_text):
     if len(new_text) > 8:
         return False
-    return text.isdecimal()
 
+    return text.isdecimal()
 
 def change_start_time():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y - %H:%M:%S")
     change_start_date_time.set(date)
-    return change_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED)
+    return change_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED), led_change_start_time.to_green(on=True)
 
 
 def colour_start_time():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y - %H:%M:%S")
     colour_start_date_time.set(date)
-    return colour_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=NORMAL)
+    return colour_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=NORMAL), led_colour_start_time.to_green(on=True)
 
 
 def colour_end_time():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y - %H:%M:%S")
     colour_end_date_time.set(date)
-    return colour_end_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=DISABLED)
+    return colour_end_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=DISABLED), led_colour_end_time.to_green(on=True)
 
 
 def validate_hangers(text, new_text):
     if len(new_text) > 2:
         return False
     return text.isdecimal()
+    return led_hangers.to_green(on=True) # No funciona
 
 
 def validate_observations(new_text):
@@ -167,7 +169,10 @@ def print_history():
         L06.set(observations_2.get())"""
 
 
-def on_register_button_click():
+def on_register_continue_button_click():
+    
+    next_change_start_date_time = colour_end_date_time.get()
+    
     # Cargar todos los colores en una lista.
     colour_list = load_colours()
 
@@ -184,6 +189,7 @@ def on_register_button_click():
                          colour_end_date_time.get() == "" or \
                          hangers_2.get() == ""
 
+
     # TODO: la validación hay que re-comprobarla para no dejar ningún caso atrás
     if str(colour_2.get()[0:9]) not in colour_list:
         if colour_2.get() == "OTRO" and observations_2.get() == "":
@@ -195,17 +201,38 @@ def on_register_button_click():
                                  title="Color inválido")
 
     elif is_any_input_empty:
-        messagebox.showerror(message="Faltan algún dato por completar", title="Algo no me cuadra...")
+        messagebox.showerror(message="Faltan algún dato por completar",
+                             title="Algo no me cuadra...")
 
     elif is_input_valid:
         register_input()
         clear_input()
         print_history()
+    
+    change_start_date_time.set(next_change_start_date_time)
+
+    #final_colour.set("FIN")
+
+    return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED)
+
+
+def on_register_end_button_click():
+    on_register_continue_button_click # Si la pongo en la línea 214 hace justo lo que quiero pero no con el botón que quiero, en cambio si la pongo en la línea 220 no me hace nada...tiene que ver con el return??
+    final_colour.set("FIN")
+
+
+def on_register_stop_button_click():
+    on_register_button_click
+
+    #Deben poder poner los minutos de descanso y que se les sume al tiempo del final del últimocolor y se ponga en el tiempo inicia del cambio del siguiente color.
+
 
 
 def on_close_click():
     if colour_2.get() == "" and change_start_date_time.get() == "" and colour_start_date_time.get() == "" and colour_end_date_time.get() == "" and hangers_2.get() == "" and observations_2.get() == "":
-        closing_message = messagebox.askquestion(message="¿Seguro que quieres salir?", title="Cierre del programa")
+        closing_message = messagebox.askquestion(
+            message="¿Seguro que quieres salir?",
+            title="Cierre del programa")
         if closing_message == "yes":
             root.destroy()
         else:
@@ -223,18 +250,41 @@ def on_close_click():
 
 root = tk.Tk()
 root.title("REGISTROS COLOERS LACADO II")
-
-
-root.resizable()
-root.geometry("790x630")
 xroot=790
 yroot=630
 root.geometry(str(xroot)+"x"+str(yroot))
+# Para abrir la ventana maximizada
+#root.state("zoomed")
+#Adquirir las dimensiones de la pantalla
+#xroot = root.winfo_screenwidth()
+#yroot = root.winfo_screenheight()
 root.iconbitmap("Gaviota.ico")
 root.state("zoomed")
+
+led_colour = tk_tools.Led(root, size=30) # No sé cómo hacerlo funcionar.
+led_colour.place(relx=((10+70-30)/xroot), y=80)
+#led_colour.to_red(on=True)
+
+led_change_start_time = tk_tools.Led(root, size=30)
+led_change_start_time.place(relx=((10+140+70-30)/xroot), y=80)
+led_change_start_time.to_red(on=True)
+
+led_colour_start_time = tk_tools.Led(root, size=30)
+led_colour_start_time.place(relx=((10+270+70-30)/xroot), y=80)
+led_colour_start_time.to_red(on=True)
+
+led_colour_end_time = tk_tools.Led(root, size=30)
+led_colour_end_time.place(relx=((10+400+70-30)/xroot), y=80)
+led_colour_end_time.to_red(on=True)
+
+led_hangers = tk_tools.Led(root, size=30) # No sé cómo hacerlo funcionar.
+led_hangers.place(relx=((10+530+70-30)/xroot), y=80)
+#led_hangers.to_red(on=True)
+
 # registry_number=0 #Debería ser el número de registro más alto que tengamos en el excel, para que así al cerrar y abrir puedan ser consecutivos.
 
 # Variables a utilizar.
+final_colour = StringVar()
 change_start_date_time = StringVar()
 colour_start_date_time = StringVar()
 colour_end_date_time = StringVar()
@@ -297,11 +347,11 @@ L64 = StringVar()
 L65 = StringVar()
 L66 = StringVar()
 
-#
-
 # Variables de la posición de los cuadros de "Registrar" hacia abajo
 xmargin = 10
-xregister = 295
+xregister_continue = (xroot/2)-100
+xregister_end = 10
+xregister_stop = xroot-10-200
 xhistorial = 10
 x1 = 10
 x2 = 70
@@ -327,7 +377,7 @@ yclose = 550
 # Registro de datos.
 colour_1 = Label(root, text="Color", anchor="center", relief="groove")
 colour_1.place(x=xmargin, y=10, relwidth=120/xroot, heigh=30)
-colour_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_colour), "%S", "%P"))
+colour_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_colour), "%S", "%P"), textvariable=final_colour)
 colour_2.place(x=xmargin, y=50, relwidth=120/xroot, heigh=30)
 
 change_start_time_1 = Button(root, text="Hora inicio cambio", state=NORMAL, command=change_start_time)
@@ -357,8 +407,16 @@ observations_2 = Entry(root, justify="center", validate="key",
 observations_2.place(relx=660/xroot, y=50, relwidth=120/xroot, heigh=30)
 
 # Botón Registrar
-register = Button(root, text="Registrar", activebackground="green", command=on_register_button_click)
-register.place(relx=xregister/xroot, rely=yregister/yroot, relwidth=200/xroot, heigh=50)
+register = Button(root, text="Registrar y continuar", activebackground="green", command=on_register_continue_button_click)
+register.place(relx=xregister_continue/xroot, rely=yregister/yroot, relwidth=200/xroot, heigh=50)
+
+# Botón Registrar y FIN
+register_end = Button(root, text="Registrar y FIN", activebackground="green", command=on_register_end_button_click)
+register_end.place(relx=xregister_end/xroot, rely=yregister/yroot, relwidth=200/xroot, heigh=50)
+
+# Botón Registrar y DESCANSO
+register_stop = Button(root, text="Registrar y PARADA", activebackground="green", command=on_register_stop_button_click)
+register_stop.place(relx=xregister_stop/xroot, rely=yregister/yroot, relwidth=200/xroot, heigh=50)
 
 # Historial de los registros anteriores.
 historial = Label(root, text="Historial de Registros", relief="sunken", background="cyan")
