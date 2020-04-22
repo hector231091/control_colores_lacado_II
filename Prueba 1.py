@@ -22,21 +22,21 @@ def change_start_time():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y - %H:%M:%S")
     change_start_date_time.set(date)
-    return change_start_date_time
+    return change_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED)
 
 
 def colour_start_time():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y - %H:%M:%S")
     colour_start_date_time.set(date)
-    return colour_start_date_time
+    return colour_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=NORMAL)
 
 
 def colour_end_time():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y - %H:%M:%S")
     colour_end_date_time.set(date)
-    return colour_end_date_time
+    return colour_end_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=DISABLED)
 
 
 def validate_hangers(text, new_text):
@@ -66,6 +66,7 @@ def register_input():
     registry_file = open(REGISTRY_FILE_NAME, "a")
     registry_file.write(generate_input_to_register())
     registry_file.close()
+    return  change_start_time_1.config(state=NORMAL), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=DISABLED)
 
 
 def clear_input():
@@ -329,17 +330,17 @@ colour_1.place(x=xmargin, y=10, relwidth=120/xroot, heigh=30)
 colour_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_colour), "%S", "%P"))
 colour_2.place(x=xmargin, y=50, relwidth=120/xroot, heigh=30)
 
-change_start_time_1 = Button(root, text="Hora inicio cambio", command=change_start_time)
+change_start_time_1 = Button(root, text="Hora inicio cambio", state=NORMAL, command=change_start_time)
 change_start_time_1.place(relx=140/xroot, y=10, relwidth=120/xroot, heigh=30)
 change_start_time_2 = Label(root, background="white", textvariable=change_start_date_time)
 change_start_time_2.place(relx=140/xroot, y=50, relwidth=120/xroot, heigh=30)
 
-colour_start_time_1 = Button(root, text="Hora inicio color", command=colour_start_time)
+colour_start_time_1 = Button(root, text="Hora inicio color", state=DISABLED, command=colour_start_time)
 colour_start_time_1.place(relx=270/xroot, y=10, relwidth=120/xroot, heigh=30)
 colour_start_time_2 = Label(root, background="white", textvariable=colour_start_date_time)
 colour_start_time_2.place(relx=270/xroot, y=50, relwidth=120/xroot, heigh=30)
 
-colour_end_time_1 = Button(root, text="Hora final color", command=colour_end_time)
+colour_end_time_1 = Button(root, text="Hora final color", state=DISABLED, command=colour_end_time)
 colour_end_time_1.place(relx=400/xroot, y=10, relwidth=120/xroot, heigh=30)
 colour_end_time_2 = Label(root, background="white", textvariable=colour_end_date_time)
 colour_end_time_2.place(relx=400/xroot, y=50, relwidth=120/xroot, heigh=30)
