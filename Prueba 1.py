@@ -1,12 +1,14 @@
 import datetime
 import tkinter as tk
 from csv import reader
-from datetime import datetime
+from datetime import datetime, time
 from tkinter import *
 from tkinter import messagebox
 import tk_tools
-
 import pandas as pd
+import matplotlib
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 # Constantes
 REGISTRY_FILE_NAME = "Registro.csv"
@@ -20,25 +22,22 @@ def validate_colour(text, new_text):
     return text.isdecimal()
 
 def change_start_time():
-    now = datetime.now()
-    date = now.strftime("%d/%m/%Y - %H:%M:%S")
+    now_change_start = datetime.now()
+    date = now_change_start.strftime("%d/%m/%Y - %H:%M:%S")
     change_start_date_time.set(date)
-    return change_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED), led_change_start_time.to_green(on=True)
-
+    return now_change_start, change_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED), led_change_start_time.to_green(on=True)
 
 def colour_start_time():
-    now = datetime.now()
-    date = now.strftime("%d/%m/%Y - %H:%M:%S")
+    now_colour_start = datetime.now()
+    date = now_colour_start.strftime("%d/%m/%Y - %H:%M:%S")
     colour_start_date_time.set(date)
-    return colour_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=NORMAL), led_colour_start_time.to_green(on=True)
-
+    return now_colour_start, colour_start_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=NORMAL), led_colour_start_time.to_green(on=True)
 
 def colour_end_time():
-    now = datetime.now()
-    date = now.strftime("%d/%m/%Y - %H:%M:%S")
+    now_colour_end = datetime.now()
+    date = now_colour_end.strftime("%d/%m/%Y - %H:%M:%S")
     colour_end_date_time.set(date)
-    return colour_end_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=DISABLED), led_colour_end_time.to_green(on=True)
-
+    return now_colour_end, colour_end_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=DISABLED), led_colour_end_time.to_green(on=True)
 
 def validate_hangers(text, new_text):
     if len(new_text) > 2:
@@ -46,20 +45,18 @@ def validate_hangers(text, new_text):
     return text.isdecimal()
     return led_hangers.to_green(on=True) # No funciona
 
-
 def validate_observations(new_text):
     if len(new_text) > 50:
         return False
 
-
 def generate_input_to_register():
+    # Buscar la forma de registrar también la variable "efficiency_hangers" para poder tenerla en el registro.
     return colour_2.get() + ";" + \
            change_start_date_time.get() + ";" + \
            colour_start_date_time.get() + ";" + \
            colour_end_date_time.get() + ";" + \
            hangers_2.get() + ";" + \
            observations_2.get() + "\n"
-
 
 def register_input():
     # Registrar en el archivo. Falta ponerle en número del registro. Falta comprobar si está el archivo,
@@ -70,7 +67,6 @@ def register_input():
     registry_file.close()
     return  change_start_time_1.config(state=NORMAL), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(state=DISABLED)
 
-
 def clear_input():
     # Eliminar el texto de las casillas que se completan
     colour_2.delete("0", "end")
@@ -79,7 +75,6 @@ def clear_input():
     colour_end_date_time.set("")
     hangers_2.delete("0", "end")
     observations_2.delete("0", "end")
-
 
 def load_colours():
     with open(COLOURS_FILE_NAME, "r") as colour:
@@ -96,7 +91,6 @@ def load_colours():
     colour_list.append("FIN")
     colour_list.append("OTRO")
     return colour_list
-
 
 def print_history():
     # Imprimir en el historial.
@@ -168,11 +162,9 @@ def print_history():
         L05.set(hangers_2.get())
         L06.set(observations_2.get())"""
 
-
 def on_register_continue_button_click():
     
     next_change_start_date_time = colour_end_date_time.get()
-    
     # Cargar todos los colores en una lista.
     colour_list = load_colours()
 
@@ -203,30 +195,51 @@ def on_register_continue_button_click():
     elif is_any_input_empty:
         messagebox.showerror(message="Faltan algún dato por completar",
                              title="Algo no me cuadra...")
+        # Hay que poner todos los casos para que tanto los LEDs como y los botones estén o no disponibles.
+        #return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED),led_colour_start_time.to_red(on=True),led_colour_end_time.to_red(on=True)
 
     elif is_input_valid:
+        colour_time_efficiency()
         register_input()
         clear_input()
         print_history()
-    
+            
     change_start_date_time.set(next_change_start_date_time)
 
-    #final_colour.set("FIN")
-
     return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED),led_colour_start_time.to_red(on=True),led_colour_end_time.to_red(on=True)
-
 
 def on_register_end_button_click():
     on_register_continue_button_click # Si la pongo en la línea 214 hace justo lo que quiero pero no con el botón que quiero, en cambio si la pongo en la línea 220 no me hace nada...tiene que ver con el return??
     final_colour.set("FIN")
-
 
 def on_register_stop_button_click():
     on_register_button_click
 
     #Deben poder poner los minutos de descanso y que se les sume al tiempo del final del últimocolor y se ponga en el tiempo inicia del cambio del siguiente color.
 
+# Rendimiento de los bastidores
+def colour_time_efficiency():
+    # Convierto los entrys en fechas para poder restarlas.
+    start_colour=datetime.strptime(colour_start_date_time.get(), "%d/%m/%Y - %H:%M:%S")
+    end_colour=datetime.strptime(colour_end_date_time.get(), "%d/%m/%Y - %H:%M:%S")
 
+    # Convertimos los bastidores a un entero.
+    hangers = int(hangers_2.get())
+
+    # Restamos las dos fechas y lo pasamos a segundos.
+    time_diff=end_colour-start_colour
+    time_colour = time_diff.days*24*3600 + time_diff.seconds
+
+    # Comparamos el número de bastidores con los que podrían pasar con un rendimiento del 100%.
+    ideal_hanger_passing_time = 10
+    max_hangers_in_time_colour = time_colour/ideal_hanger_passing_time
+
+    # Eficiencia del paso de bastidores de este color.
+    efficiency_hangers = hangers / max_hangers_in_time_colour
+
+    #print(efficiency_hangers*100,"%")
+
+    return efficiency_hangers
 
 def on_close_click():
     if colour_2.get() == "" and change_start_date_time.get() == "" and colour_start_date_time.get() == "" and colour_end_date_time.get() == "" and hangers_2.get() == "" and observations_2.get() == "":
@@ -241,7 +254,6 @@ def on_close_click():
         messagebox.showerror(
             message="Para poder salir debes registrar todos los datos o borrarlos.\n\nNo te habrás dejado algo por registrar verdad...??",
             title="Cierre del programa")
-
 
 # Mostrar todas las líneas que se han introducido por la pantalla.
 
@@ -260,6 +272,30 @@ root.geometry(str(xroot)+"x"+str(yroot))
 #yroot = root.winfo_screenheight()
 root.iconbitmap("Gaviota.ico")
 root.state("zoomed")
+
+# Frame para el gráfico.
+graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")
+graphic.place(x=300, y=455, height=245, width=800, )
+
+# Crear figura del gráfico.
+figure = Figure(figsize=(25, 10), dpi=100)
+x = ["4010016", "4010001", "4010017", "4010354", "4010236"]
+y = [1.3,0.75,0.6,0.85,1.05]
+
+# Poner el gráfico en la figura creada.
+a = figure.add_subplot(111)
+a.plot(x,y, marker = "o")
+a.set_xlabel("Colores")
+a.set_ylabel("Rendimient (%)")
+a.set_title("Rendimiento color")
+a.legend()
+a.grid()
+
+# Creating Canvas
+canv = FigureCanvasTkAgg(figure, master = graphic)
+canv.draw()
+get_widz = canv.get_tk_widget()
+get_widz.pack()
 
 led_colour = tk_tools.Led(root, size=30) # No sé cómo hacerlo funcionar.
 led_colour.place(relx=((10+70-30)/xroot), y=80)
@@ -362,10 +398,10 @@ x6 = x5 + 120
 x7 = x6 + 120
 xcerrar = 295
 
-yregister = 150
-yheadboard = 260
-yhistorial = 225
-y1 = 295
+yregister = 0.17*yroot
+yhistorial = 175
+yheadboard = 210
+y1 = 245
 y2 = y1 + 35
 y3 = y2 + 35
 y4 = y3 + 35
@@ -583,6 +619,7 @@ L_5_6.place(relx=x7/xroot, y=y6, relwidth=110/xroot, heigh=30)
 
 # Botón para cerrar ventana
 close = Button(root, text="Cerrar", activebackground="red", command=on_close_click)
-close.place(relx=xcerrar/xroot, y=yclose, relwidth=200/xroot, heigh=50)
+#close.place(relx=xcerrar/xroot, y=yclose, relwidth=200/xroot, heigh=50)
+close.place(x=10, y=yclose, width=200, heigh=50)
 
 root.mainloop()
