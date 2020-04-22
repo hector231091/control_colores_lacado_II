@@ -213,7 +213,7 @@ def on_register_continue_button_click():
 
     #final_colour.set("FIN")
 
-    return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED)
+    return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED),led_colour_start_time.to_red(on=True),led_colour_end_time.to_red(on=True)
 
 
 def on_register_end_button_click():
