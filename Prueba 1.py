@@ -26,9 +26,9 @@ def on_change_start_time_click():
     now_change_start = datetime.now()
     date = now_change_start.strftime("%d/%m/%Y - %H:%M:%S")
     change_start_date_time.set(date)
-    change_start_time_1.config(state=DISABLED)
-    colour_start_time_1.config(state=NORMAL)
-    colour_end_time_1.config(state=DISABLED)
+    change_start_time_button.config(state=DISABLED)
+    colour_start_time_button.config(state=NORMAL)
+    colour_end_time_button.config(state=DISABLED)
     led_change_start_time.to_green(on=True)
 
 
@@ -36,9 +36,9 @@ def on_colour_start_time_click():
     now_colour_start = datetime.now()
     date = now_colour_start.strftime("%d/%m/%Y - %H:%M:%S")
     colour_start_date_time.set(date)
-    change_start_time_1.config(state=DISABLED)
-    colour_start_time_1.config(state=DISABLED)
-    colour_end_time_1.config(state=NORMAL)
+    change_start_time_button.config(state=DISABLED)
+    colour_start_time_button.config(state=DISABLED)
+    colour_end_time_button.config(state=NORMAL)
     led_colour_start_time.to_green(on=True)
 
 
@@ -46,9 +46,9 @@ def on_colour_end_time_click():
     now_colour_end = datetime.now()
     date = now_colour_end.strftime("%d/%m/%Y - %H:%M:%S")
     colour_end_date_time.set(date)
-    change_start_time_1.config(state=DISABLED)
-    colour_start_time_1.config(state=DISABLED)
-    colour_end_time_1.config(state=DISABLED)
+    change_start_time_button.config(state=DISABLED)
+    colour_start_time_button.config(state=DISABLED)
+    colour_end_time_button.config(state=DISABLED)
     led_colour_end_time.to_green(on=True)
 
 
@@ -66,12 +66,12 @@ def validate_observations(new_text):
 
 def generate_input_to_register():
     # Buscar la forma de registrar también la variable "efficiency_hangers" para poder tenerla en el registro.
-    return colour_2.get() + ";" + \
+    return colour_entry.get() + ";" + \
            change_start_date_time.get() + ";" + \
            colour_start_date_time.get() + ";" + \
            colour_end_date_time.get() + ";" + \
-           hangers_2.get() + ";" + \
-           observations_2.get() + "\n"
+           hangers_entry.get() + ";" + \
+           observations_entry.get() + "\n"
 
 
 def register_input():
@@ -85,12 +85,12 @@ def register_input():
 
 def clear_input():
     # Eliminar el texto de las casillas que se completan
-    colour_2.delete("0", "end")
+    colour_entry.delete("0", "end")
     change_start_date_time.set("")
     colour_start_date_time.set("")
     colour_end_date_time.set("")
-    hangers_2.delete("0", "end")
-    observations_2.delete("0", "end")
+    hangers_entry.delete("0", "end")
+    observations_entry.delete("0", "end")
 
 
 def load_colours():
@@ -186,22 +186,22 @@ def on_register_continue_button_click():
     # Cargar todos los colores en una lista.
     colour_list = load_colours()
 
-    is_input_valid = str(colour_2.get()[0:9]) in colour_list and \
-                     colour_2.get() != "" and \
+    is_input_valid = str(colour_entry.get()[0:9]) in colour_list and \
+                     colour_entry.get() != "" and \
                      change_start_date_time.get() != "" and \
                      colour_start_date_time.get() != "" and \
                      colour_end_date_time.get() != "" \
-                     and hangers_2.get() != ""
+                     and hangers_entry.get() != ""
 
-    is_any_input_empty = colour_2.get() == "" or \
+    is_any_input_empty = colour_entry.get() == "" or \
                          change_start_date_time.get() == "" or \
                          colour_start_date_time.get() == "" or \
                          colour_end_date_time.get() == "" or \
-                         hangers_2.get() == ""
+                         hangers_entry.get() == ""
 
     # TODO: la validación hay que re-comprobarla para no dejar ningún caso atrás
-    if str(colour_2.get()[0:9]) not in colour_list:
-        if colour_2.get() == "OTRO" and observations_2.get() == "":
+    if str(colour_entry.get()[0:9]) not in colour_list:
+        if colour_entry.get() == "OTRO" and observations_entry.get() == "":
             messagebox.showerror(message="Si no me pones el color... ponlo en las observaciones :)",
                                  title="Falta poner el color en las observaciones")
         else:
@@ -216,7 +216,7 @@ def on_register_continue_button_click():
         # return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED),led_colour_start_time.to_red(on=True),led_colour_end_time.to_red(on=True)
 
     elif is_input_valid:
-        get_colour_time_efficiency(colour_start_date_time, colour_end_date_time, hangers_2)
+        get_colour_time_efficiency(colour_start_date_time, colour_end_date_time, hangers_entry)
         register_input()
         reset_leds()
         clear_input()
@@ -224,17 +224,17 @@ def on_register_continue_button_click():
 
     change_start_date_time.set(next_change_start_date_time)
 
-    change_start_time_1.config(state=DISABLED)
-    colour_start_time_1.config(state=NORMAL)
-    colour_end_time_1.config(state=DISABLED)
+    change_start_time_button.config(state=DISABLED)
+    colour_start_time_button.config(state=NORMAL)
+    colour_end_time_button.config(state=DISABLED)
     led_colour_start_time.to_red(on=True)
     led_colour_end_time.to_red(on=True)
 
 
 def reset_leds():
-    change_start_time_1.config(state=NORMAL)
-    colour_start_time_1.config(state=DISABLED)
-    colour_end_time_1.config(state=DISABLED)
+    change_start_time_button.config(state=NORMAL)
+    colour_start_time_button.config(state=DISABLED)
+    colour_end_time_button.config(state=DISABLED)
 
 
 def on_register_end_button_click():
@@ -274,7 +274,7 @@ def get_colour_time_efficiency(start_datetime_as_string, end_datetime_as_string,
 
 
 def on_close_click():
-    if colour_2.get() == "" and change_start_date_time.get() == "" and colour_start_date_time.get() == "" and colour_end_date_time.get() == "" and hangers_2.get() == "" and observations_2.get() == "":
+    if colour_entry.get() == "" and change_start_date_time.get() == "" and colour_start_date_time.get() == "" and colour_end_date_time.get() == "" and hangers_entry.get() == "" and observations_entry.get() == "":
         closing_message = messagebox.askquestion(
             message="¿Seguro que quieres salir?",
             title="Cierre del programa")
@@ -444,75 +444,86 @@ y7 = y6 + 35
 yclose = 550
 
 # Registro de datos.
-colour_1 = Label(root, text="Color", anchor="center", relief="groove")
-colour_1.place(x=xmargin, y=10, relwidth=120 / xroot, heigh=30)
-colour_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_colour), "%S", "%P"),
-                 textvariable=final_colour)
-colour_2.place(x=xmargin, y=50, relwidth=120 / xroot, heigh=30)
+colour_label = Label(root, text="Color", anchor="center", relief="groove")
+colour_label.place(x=xmargin, y=10, relwidth=120 / xroot, heigh=30)
+colour_entry = Entry(root,
+                     justify="center",
+                     validate="key",
+                     validatecommand=(root.register(validate_colour), "%S", "%P"),
+                     textvariable=final_colour)
+colour_entry.place(x=xmargin, y=50, relwidth=120 / xroot, heigh=30)
 
-change_start_time_1 = Button(root, text="Hora inicio cambio", state=NORMAL, command=on_change_start_time_click)
-change_start_time_1.place(relx=140 / xroot, y=10, relwidth=120 / xroot, heigh=30)
-change_start_time_2 = Label(root, background="white", textvariable=change_start_date_time)
-change_start_time_2.place(relx=140 / xroot, y=50, relwidth=120 / xroot, heigh=30)
+change_start_time_button = Button(root, text="Hora inicio cambio", state=NORMAL, command=on_change_start_time_click)
+change_start_time_button.place(relx=140 / xroot, y=10, relwidth=120 / xroot, heigh=30)
+change_start_time_label = Label(root, background="white", textvariable=change_start_date_time)
+change_start_time_label.place(relx=140 / xroot, y=50, relwidth=120 / xroot, heigh=30)
 
-colour_start_time_1 = Button(root, text="Hora inicio color", state=DISABLED, command=on_colour_start_time_click)
-colour_start_time_1.place(relx=270 / xroot, y=10, relwidth=120 / xroot, heigh=30)
-colour_start_time_2 = Label(root, background="white", textvariable=colour_start_date_time)
-colour_start_time_2.place(relx=270 / xroot, y=50, relwidth=120 / xroot, heigh=30)
+colour_start_time_button = Button(root, text="Hora inicio color", state=DISABLED, command=on_colour_start_time_click)
+colour_start_time_button.place(relx=270 / xroot, y=10, relwidth=120 / xroot, heigh=30)
+colour_start_time_label = Label(root, background="white", textvariable=colour_start_date_time)
+colour_start_time_label.place(relx=270 / xroot, y=50, relwidth=120 / xroot, heigh=30)
 
-colour_end_time_1 = Button(root, text="Hora final color", state=DISABLED, command=on_colour_end_time_click)
-colour_end_time_1.place(relx=400 / xroot, y=10, relwidth=120 / xroot, heigh=30)
-colour_end_time_2 = Label(root, background="white", textvariable=colour_end_date_time)
-colour_end_time_2.place(relx=400 / xroot, y=50, relwidth=120 / xroot, heigh=30)
+colour_end_time_button = Button(root, text="Hora final color", state=DISABLED, command=on_colour_end_time_click)
+colour_end_time_button.place(relx=400 / xroot, y=10, relwidth=120 / xroot, heigh=30)
+colour_end_time_label = Label(root, background="white", textvariable=colour_end_date_time)
+colour_end_time_label.place(relx=400 / xroot, y=50, relwidth=120 / xroot, heigh=30)
 
-hangers_1 = Label(root, text="Nº de bastidores", anchor="center", relief="groove")
-hangers_1.place(relx=530 / xroot, y=10, relwidth=120 / xroot, heigh=30)
-hangers_2 = Entry(root, justify="center", validate="key", validatecommand=(root.register(validate_hangers), "%S", "%P"))
-hangers_2.place(relx=530 / xroot, y=50, relwidth=120 / xroot, heigh=30)
+hangers_label = Label(root, text="Nº de bastidores", anchor="center", relief="groove")
+hangers_label.place(relx=530 / xroot, y=10, relwidth=120 / xroot, heigh=30)
+hangers_entry = Entry(root,
+                      justify="center",
+                      validate="key",
+                      validatecommand=(root.register(validate_hangers), "%S", "%P"))
+hangers_entry.place(relx=530 / xroot, y=50, relwidth=120 / xroot, heigh=30)
 
-observations_1 = Label(root, text="Observaciones", anchor="center", relief="groove")
-observations_1.place(relx=660 / xroot, y=10, relwidth=120 / xroot, heigh=30)
-observations_2 = Entry(root, justify="center", validate="key",
-                       validatecommand=(root.register(validate_observations), "%P"))
-observations_2.place(relx=660 / xroot, y=50, relwidth=120 / xroot, heigh=30)
+observations_label = Label(root, text="Observaciones", anchor="center", relief="groove")
+observations_label.place(relx=660 / xroot, y=10, relwidth=120 / xroot, heigh=30)
+observations_entry = Entry(root,
+                           justify="center",
+                           validate="key",
+                           validatecommand=(root.register(validate_observations), "%P"))
+observations_entry.place(relx=660 / xroot, y=50, relwidth=120 / xroot, heigh=30)
 
 # Botón Registrar
-register = Button(root, text="Registrar y continuar", activebackground="green",
-                  command=on_register_continue_button_click)
-register.place(relx=xregister_continue / xroot, rely=yregister / yroot, relwidth=200 / xroot, heigh=50)
+register_button = Button(root, text="Registrar y continuar", activebackground="green",
+                         command=on_register_continue_button_click)
+register_button.place(relx=xregister_continue / xroot, rely=yregister / yroot, relwidth=200 / xroot, heigh=50)
 
 # Botón Registrar y FIN
-register_end = Button(root, text="Registrar y FIN", activebackground="green", command=on_register_end_button_click)
-register_end.place(relx=xregister_end / xroot, rely=yregister / yroot, relwidth=200 / xroot, heigh=50)
+register_end_button = Button(root,
+                             text="Registrar y FIN",
+                             activebackground="green",
+                             command=on_register_end_button_click)
+register_end_button.place(relx=xregister_end / xroot, rely=yregister / yroot, relwidth=200 / xroot, heigh=50)
 
 # Botón Registrar y DESCANSO
-register_stop = Button(root, text="Registrar y PARADA", activebackground="green", command=on_register_stop_button_click)
-register_stop.place(relx=xregister_stop / xroot, rely=yregister / yroot, relwidth=200 / xroot, heigh=50)
+register_stop_button = Button(root, text="Registrar y PARADA", activebackground="green", command=on_register_stop_button_click)
+register_stop_button.place(relx=xregister_stop / xroot, rely=yregister / yroot, relwidth=200 / xroot, heigh=50)
 
 # Historial de los registros anteriores.
-historial = Label(root, text="Historial de Registros", relief="sunken", background="cyan")
-historial.place(x=xmargin, y=yhistorial, relwidth=775 / xroot, heigh=30)
+historical_title_label = Label(root, text="Historial de Registros", relief="sunken", background="cyan")
+historical_title_label.place(x=xmargin, y=yhistorial, relwidth=775 / xroot, heigh=30)
 
-registry_number = Label(root, text="Nº", relief="groove", background="cyan")
-registry_number.place(x=xmargin, y=yheadboard, relwidth=50 / xroot, heigh=30)
+registry_number_title_label = Label(root, text="Nº", relief="groove", background="cyan")
+registry_number_title_label.place(x=xmargin, y=yheadboard, relwidth=50 / xroot, heigh=30)
 
-colour_3 = Label(root, text="Color", relief="groove", background="cyan")
-colour_3.place(relx=x2 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
+colour_title_label = Label(root, text="Color", relief="groove", background="cyan")
+colour_title_label.place(relx=x2 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
 
-change_start_time_3 = Label(root, text="Hora inicio cambio", relief="groove", background="cyan")
-change_start_time_3.place(relx=x3 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
+change_start_time_title_label = Label(root, text="Hora inicio cambio", relief="groove", background="cyan")
+change_start_time_title_label.place(relx=x3 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
 
-colour_start_time_3 = Label(root, text="Hora inicio color", relief="groove", background="cyan")
-colour_start_time_3.place(relx=x4 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
+colour_start_time_title_label = Label(root, text="Hora inicio color", relief="groove", background="cyan")
+colour_start_time_title_label.place(relx=x4 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
 
-colour_end_time_3 = Label(root, text="Hora final color", relief="groove", background="cyan")
-colour_end_time_3.place(relx=x5 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
+colour_end_time_title_label = Label(root, text="Hora final color", relief="groove", background="cyan")
+colour_end_time_title_label.place(relx=x5 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
 
-hangers_3 = Label(root, text="Nº de bastidores", relief="groove", background="cyan")
-hangers_3.place(relx=x6 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
+hangers_title_label = Label(root, text="Nº de bastidores", relief="groove", background="cyan")
+hangers_title_label.place(relx=x6 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
 
-observations_3 = Label(root, text="Observaciones", relief="groove", background="cyan")
-observations_3.place(relx=x7 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
+observations_title_label = Label(root, text="Observaciones", relief="groove", background="cyan")
+observations_title_label.place(relx=x7 / xroot, y=yheadboard, relwidth=110 / xroot, heigh=30)
 
 # ---------------------------------------------------------------------------
 
