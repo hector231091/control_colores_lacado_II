@@ -22,30 +22,34 @@ def validate_colour(text, new_text):
     return text.isdecimal()
 
 
-def change_start_time():
+def on_change_start_time_click():
     now_change_start = datetime.now()
     date = now_change_start.strftime("%d/%m/%Y - %H:%M:%S")
     change_start_date_time.set(date)
-    return now_change_start, change_start_date_time, change_start_time_1.config(
-        state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(
-        state=DISABLED), led_change_start_time.to_green(on=True)
+    change_start_time_1.config(state=DISABLED)
+    colour_start_time_1.config(state=NORMAL)
+    colour_end_time_1.config(state=DISABLED)
+    led_change_start_time.to_green(on=True)
 
 
-def colour_start_time():
+def on_colour_start_time_click():
     now_colour_start = datetime.now()
     date = now_colour_start.strftime("%d/%m/%Y - %H:%M:%S")
     colour_start_date_time.set(date)
-    return now_colour_start, colour_start_date_time, change_start_time_1.config(
-        state=DISABLED), colour_start_time_1.config(state=DISABLED), colour_end_time_1.config(
-        state=NORMAL), led_colour_start_time.to_green(on=True)
+    change_start_time_1.config(state=DISABLED)
+    colour_start_time_1.config(state=DISABLED)
+    colour_end_time_1.config(state=NORMAL)
+    led_colour_start_time.to_green(on=True)
 
 
-def colour_end_time():
+def on_colour_end_time_click():
     now_colour_end = datetime.now()
     date = now_colour_end.strftime("%d/%m/%Y - %H:%M:%S")
     colour_end_date_time.set(date)
-    return now_colour_end, colour_end_date_time, change_start_time_1.config(state=DISABLED), colour_start_time_1.config(
-        state=DISABLED), colour_end_time_1.config(state=DISABLED), led_colour_end_time.to_green(on=True)
+    change_start_time_1.config(state=DISABLED)
+    colour_start_time_1.config(state=DISABLED)
+    colour_end_time_1.config(state=DISABLED)
+    led_colour_end_time.to_green(on=True)
 
 
 def validate_hangers(text, new_text):
@@ -446,17 +450,17 @@ colour_2 = Entry(root, justify="center", validate="key", validatecommand=(root.r
                  textvariable=final_colour)
 colour_2.place(x=xmargin, y=50, relwidth=120 / xroot, heigh=30)
 
-change_start_time_1 = Button(root, text="Hora inicio cambio", state=NORMAL, command=change_start_time)
+change_start_time_1 = Button(root, text="Hora inicio cambio", state=NORMAL, command=on_change_start_time_click)
 change_start_time_1.place(relx=140 / xroot, y=10, relwidth=120 / xroot, heigh=30)
 change_start_time_2 = Label(root, background="white", textvariable=change_start_date_time)
 change_start_time_2.place(relx=140 / xroot, y=50, relwidth=120 / xroot, heigh=30)
 
-colour_start_time_1 = Button(root, text="Hora inicio color", state=DISABLED, command=colour_start_time)
+colour_start_time_1 = Button(root, text="Hora inicio color", state=DISABLED, command=on_colour_start_time_click)
 colour_start_time_1.place(relx=270 / xroot, y=10, relwidth=120 / xroot, heigh=30)
 colour_start_time_2 = Label(root, background="white", textvariable=colour_start_date_time)
 colour_start_time_2.place(relx=270 / xroot, y=50, relwidth=120 / xroot, heigh=30)
 
-colour_end_time_1 = Button(root, text="Hora final color", state=DISABLED, command=colour_end_time)
+colour_end_time_1 = Button(root, text="Hora final color", state=DISABLED, command=on_colour_end_time_click)
 colour_end_time_1.place(relx=400 / xroot, y=10, relwidth=120 / xroot, heigh=30)
 colour_end_time_2 = Label(root, background="white", textvariable=colour_end_date_time)
 colour_end_time_2.place(relx=400 / xroot, y=50, relwidth=120 / xroot, heigh=30)
