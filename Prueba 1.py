@@ -212,7 +212,7 @@ def on_register_continue_button_click():
         # return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED),led_colour_start_time.to_red(on=True),led_colour_end_time.to_red(on=True)
 
     elif is_input_valid:
-        colour_time_efficiency()
+        get_colour_time_efficiency(colour_start_date_time, colour_end_date_time, hangers_2)
         register_input()
         reset_leds()
         clear_input()
@@ -220,9 +220,11 @@ def on_register_continue_button_click():
 
     change_start_date_time.set(next_change_start_date_time)
 
-    return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(
-        state=NORMAL), colour_end_time_1.config(state=DISABLED), led_colour_start_time.to_red(
-        on=True), led_colour_end_time.to_red(on=True)
+    change_start_time_1.config(state=DISABLED)
+    colour_start_time_1.config(state=NORMAL)
+    colour_end_time_1.config(state=DISABLED)
+    led_colour_start_time.to_red(on=True)
+    led_colour_end_time.to_red(on=True)
 
 
 def reset_leds():
@@ -243,13 +245,13 @@ def on_register_stop_button_click():
 
 
 # Rendimiento de los bastidores
-def colour_time_efficiency():
+def get_colour_time_efficiency(start_datetime_as_string, end_datetime_as_string, amount_of_hangers_as_string):
     # Convierto los entrys en fechas para poder restarlas.
-    start_colour = datetime.strptime(colour_start_date_time.get(), "%d/%m/%Y - %H:%M:%S")
-    end_colour = datetime.strptime(colour_end_date_time.get(), "%d/%m/%Y - %H:%M:%S")
+    start_colour = datetime.strptime(start_datetime_as_string.get(), "%d/%m/%Y - %H:%M:%S")
+    end_colour = datetime.strptime(end_datetime_as_string.get(), "%d/%m/%Y - %H:%M:%S")
 
     # Convertimos los bastidores a un entero.
-    hangers = int(hangers_2.get())
+    hangers = int(amount_of_hangers_as_string.get())
 
     # Restamos las dos fechas y lo pasamos a segundos.
     time_diff = end_colour - start_colour
