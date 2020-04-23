@@ -77,8 +77,6 @@ def register_input():
     registry_file = open(REGISTRY_FILE_NAME, "a")
     registry_file.write(generate_input_to_register())
     registry_file.close()
-    return change_start_time_1.config(state=NORMAL), colour_start_time_1.config(
-        state=DISABLED), colour_end_time_1.config(state=DISABLED)
 
 
 def clear_input():
@@ -216,6 +214,7 @@ def on_register_continue_button_click():
     elif is_input_valid:
         colour_time_efficiency()
         register_input()
+        reset_leds()
         clear_input()
         print_history()
 
@@ -224,6 +223,12 @@ def on_register_continue_button_click():
     return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(
         state=NORMAL), colour_end_time_1.config(state=DISABLED), led_colour_start_time.to_red(
         on=True), led_colour_end_time.to_red(on=True)
+
+
+def reset_leds():
+    change_start_time_1.config(state=NORMAL)
+    colour_start_time_1.config(state=DISABLED)
+    colour_end_time_1.config(state=DISABLED)
 
 
 def on_register_end_button_click():
@@ -292,8 +297,8 @@ root.geometry(str(xroot) + "x" + str(yroot))
 # Adquirir las dimensiones de la pantalla
 # xroot = root.winfo_screenwidth()
 # yroot = root.winfo_screenheight()
-root.iconbitmap("Gaviota.ico")
-root.state("zoomed")
+# root.iconbitmap("Gaviota.ico")
+# root.state("zoomed")
 
 # Frame para el gráfico.
 graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")
