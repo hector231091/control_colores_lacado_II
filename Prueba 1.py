@@ -59,10 +59,19 @@ def on_colour_end_time_click():
 
 
 def validate_hangers(text, new_text):
+	# Me funciona el LED (validate="focusout") o me funciona lo de que solo me deje poner 8 números (validate="key"), pero las dos cosas no...
+    if hangers_entry.get() == "0":
+    	led_hangers.to_red(on=True)
+
+    elif hangers_entry.get() != "" and len(new_text) <= 2:
+    	led_hangers.to_green(on=True)
+
+    else:
+    	led_hangers.to_red(on=True)
+
     if len(new_text) > 2:
         return False
     return text.isdecimal()
-    return led_hangers.to_green(on=True)  # No funciona
 
 
 def validate_observations(new_text):
@@ -361,7 +370,7 @@ led_colour_end_time.to_red(on=True)
 
 led_hangers = tk_tools.Led(root, size=30)  # No sé cómo hacerlo funcionar.
 led_hangers.place(relx=0.73, rely=0.1)
-# led_hangers.to_red(on=True)
+led_hangers.to_red(on=True)
 
 # registry_number=0 #Debería ser el número de registro más alto que tengamos en el excel, para que así al cerrar y abrir puedan ser consecutivos.
 
@@ -477,7 +486,7 @@ hangers_label = Label(root, text="Nº de bastidores", anchor="center", relief="g
 hangers_label.place(relx=0.67, rely=0.01, relwidth=0.155, relheigh=0.045)
 hangers_entry = Entry(root,
                       justify="center",
-                      validate="key",
+                      validate="focusout",
                       validatecommand=(root.register(validate_hangers), "%S", "%P"))
 hangers_entry.place(relx=0.67, rely=0.06, relwidth=0.155, relheigh=0.045)
 
