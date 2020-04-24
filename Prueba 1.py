@@ -268,9 +268,13 @@ def reset_buttons():
 
 
 def reset_leds():
+    led_colour.to_red(on=True)
     led_change_start_time.to_green(on=True)
     led_colour_start_time.to_red(on=True)
     led_colour_end_time.to_red(on=True)
+    led_hangers.to_red(on=True)
+    led_observations.to_red(on=True)
+
 
 def on_register_end_button_click():
     on_register_continue_button_click  # Si la pongo en la línea 214 hace justo lo que quiero pero no con el botón que quiero, en cambio si la pongo en la línea 220 no me hace nada...tiene que ver con el return??
