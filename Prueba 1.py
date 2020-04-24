@@ -16,8 +16,14 @@ COLOURS_FILE_NAME = "Colores.csv"
 
 
 def validate_colour(text, new_text):
-    if len(new_text) > 8:
-        return False
+	# Me funciona el LED (validate="focusout") o me funciona lo de que solo me deje poner 8 números (validate="key"), pero las dos cosas no...
+    if colour_entry.get() in load_colours():
+    	led_colour.to_green(on=True)
+    else:
+    	led_colour.to_red(on=True)
+
+    #if len(new_text)>8:
+    #	return False
 
     return text.isdecimal()
 
@@ -447,7 +453,7 @@ colour_label = Label(root, text="Color", anchor="center", relief="groove")
 colour_label.place(relx=0.01, rely=0.01, relwidth=0.155, relheigh=0.045)
 colour_entry = Entry(root,
                      justify="center",
-                     validate="key",
+                     validate="focusout",
                      validatecommand=(root.register(validate_colour), "%S", "%P"),
                      textvariable=final_colour)
 colour_entry.place(relx=0.01, rely=0.06, relwidth=0.155, relheigh=0.045)
