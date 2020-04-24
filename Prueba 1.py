@@ -217,6 +217,11 @@ def on_register_continue_button_click():
                              title="Algo no me cuadra...")
         return
 
+    elif hangers_entry.get() == "0":
+    	messagebox.showerror(message="No pueden haber 0 bastidores.",
+                             title="Error de número de bastidores")
+    	return
+
     elif is_input_valid:
         get_colour_time_efficiency(colour_start_date_time, colour_end_date_time, hangers_entry)
         register_input()
