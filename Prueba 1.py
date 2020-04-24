@@ -191,8 +191,10 @@ def get_change_colour_time_efficiency(color_1_and_2, change_times_list):
     last_time_change_in_seconds = last_time_change.days * 24 * 3600 + last_time_change.seconds
     #print(last_time_change_in_seconds)
 
-    efficiency_change_last_colour = ((average_time_of_colour_change * 100)/ last_time_change_in_seconds,"%")
+    efficiency_change_last_colour = str(int((average_time_of_colour_change * 100)/ last_time_change_in_seconds))+" %"
     #print(efficiency_change_last_colour,"%")
+
+    show_efficiency_change_colour.set(efficiency_change_last_colour)
 
     return efficiency_change_last_colour
 
@@ -202,6 +204,9 @@ def print_history():
     # Pasamos el archivo de los registros a una matriz
     registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
     num_rows = len(registry_file[0])
+
+    colour_1.set(registry_file[0][num_rows - 1])
+    colour_2.set(registry_file[0][num_rows - 2])
 
     L00.set(num_rows)
     L01.set(registry_file[0][num_rows - 1])
@@ -368,6 +373,10 @@ def get_colour_time_efficiency(start_datetime_as_string, end_datetime_as_string,
     efficiency_hangers = hangers / max_hangers_in_time_colour
 
     # print(efficiency_hangers*100,"%")
+    # round(number,1) sirve para redondear un flotante al decimal que queramos
+    percentage_efficiency_hangers = str(int(efficiency_hangers*100))+" %"
+
+    show_efficiency_hangers.set(percentage_efficiency_hangers)
 
     return efficiency_hangers
 
@@ -461,6 +470,10 @@ change_start_date_time = StringVar()
 colour_start_date_time = StringVar()
 colour_end_date_time = StringVar()
 final_observation = StringVar()
+show_efficiency_hangers = StringVar()
+colour_1 = StringVar()
+colour_2 = StringVar()
+show_efficiency_change_colour = StringVar()
 
 # Definir las variables de cada una de las celdas del historial
 
@@ -761,8 +774,35 @@ L_5_6 = Label(root, background="white", textvariable=L56, relief="groove")
 L_5_6.place(relx=x7, rely=y6, relwidth=0.1392, relheigh=0.0476)
 
 # Botón para cerrar ventana
-close = Button(root, text="Cerrar", activebackground="red", command=on_close_click)
+# close = Button(root, text="Cerrar", activebackground="red", command=on_close_click)
 # close.place(relx=xcerrar/xroot, y=yclose, relwidth=200/xroot, heigh=50)
-close.place(relx=x1, rely=yclose, relwidth=0.2, relheigh=0.1)
+# close.place(relx=x1, rely=yclose, relwidth=0.2, relheigh=0.1)
+
+# Mostrar el rendimiento del último color.
+efficiency_colour_title = Label(root, text="Rendimiento del último color", relief="groove")
+efficiency_colour_title.place(relx=x1, rely=0.655, relwidth=0.23, relheigh=0.05)
+
+efficiency_colour_colour_2 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_2)
+efficiency_colour_colour_2.place(relx=x1, rely=0.71, relwidth=0.1, relheigh=0.07)
+efficiency_colour_colour_2.config(font=("Comic Sans MS",15))
+
+efficiency_colour_result = Label(root, text="Rendimiento del cambio de color", relief="groove", background="white", textvariable=show_efficiency_hangers)
+efficiency_colour_result.place(relx=x1+0.1, rely=0.71, relwidth=0.13, relheigh=0.07)
+efficiency_colour_result.config(font=("Comic Sans MS",30))
+
+efficiency_change_colour_title = Label(root, text="Rendimiento del último cambio de color", relief="groove")
+efficiency_change_colour_title.place(relx=x1, rely=0.785, relwidth=0.23, relheigh=0.05)
+
+efficiency_change_colour_1 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_1)
+efficiency_change_colour_1.place(relx=x1, rely=0.84, relwidth=0.1, relheigh=0.06)
+efficiency_change_colour_1.config(font=("Comic Sans MS",15))
+
+efficiency_change_colour_2 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_2)
+efficiency_change_colour_2.place(relx=x1, rely=0.9, relwidth=0.1, relheigh=0.06)
+efficiency_change_colour_2.config(font=("Comic Sans MS",15))
+
+efficiency_change_colour_result = Label(root, text="Rendimiento del cambio de color", relief="groove", background="white", textvariable=show_efficiency_change_colour)
+efficiency_change_colour_result.place(relx=x1+0.1, rely=0.84, relwidth=0.13, relheigh=0.12)
+efficiency_change_colour_result.config(font=("Comic Sans MS",15))
 
 root.mainloop()
