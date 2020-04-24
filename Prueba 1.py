@@ -204,38 +204,40 @@ def on_register_continue_button_click():
         if colour_entry.get() == "OTRO" and observations_entry.get() == "":
             messagebox.showerror(message="Si no me pones el color... ponlo en las observaciones :)",
                                  title="Falta poner el color en las observaciones")
+            return
+
         else:
             messagebox.showerror(message="El color que se ha introducido no existe.\n\n"
                                          "Por favor, introduce un color válido y vuelve a registrar.",
                                  title="Color inválido")
+            return
 
     elif is_any_input_empty:
         messagebox.showerror(message="Faltan algún dato por completar",
                              title="Algo no me cuadra...")
-        # Hay que poner todos los casos para que tanto los LEDs como y los botones estén o no disponibles.
-        # return change_start_time_1.config(state=DISABLED), colour_start_time_1.config(state=NORMAL), colour_end_time_1.config(state=DISABLED),led_colour_start_time.to_red(on=True),led_colour_end_time.to_red(on=True)
+        return
 
     elif is_input_valid:
         get_colour_time_efficiency(colour_start_date_time, colour_end_date_time, hangers_entry)
         register_input()
+        reset_buttons()
         reset_leds()
         clear_input()
         print_history()
 
     change_start_date_time.set(next_change_start_date_time)
 
+
+def reset_buttons():
     change_start_time_button.config(state=DISABLED)
     colour_start_time_button.config(state=NORMAL)
     colour_end_time_button.config(state=DISABLED)
-    led_colour_start_time.to_red(on=True)
-    led_colour_end_time.to_red(on=True)
 
 
 def reset_leds():
-    change_start_time_button.config(state=NORMAL)
-    colour_start_time_button.config(state=DISABLED)
-    colour_end_time_button.config(state=DISABLED)
-
+    led_change_start_time.to_green(on=True)
+    led_colour_start_time.to_red(on=True)
+    led_colour_end_time.to_red(on=True)
 
 def on_register_end_button_click():
     on_register_continue_button_click  # Si la pongo en la línea 214 hace justo lo que quiero pero no con el botón que quiero, en cambio si la pongo en la línea 220 no me hace nada...tiene que ver con el return??
