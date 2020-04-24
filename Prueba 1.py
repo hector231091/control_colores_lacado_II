@@ -157,7 +157,7 @@ def load_average_colour_change_time():
             join_colour_1_and_2.append(string_colours)
 
     #print(join_colour_1_and_2)
-    print(list_average_change_time[0])
+    #print(list_average_change_time[0])
 
     return join_colour_1_and_2, list_average_change_time
 
