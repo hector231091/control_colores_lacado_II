@@ -13,6 +13,7 @@ from matplotlib.figure import Figure
 # Constantes
 REGISTRY_FILE_NAME = "Registro.csv"
 COLOURS_FILE_NAME = "Colores.csv"
+AVERAGE_CHANGE_TIME_NAME = "Tiempos de cambio.csv"
 
 
 def validate_colour(text, new_text):
@@ -138,6 +139,64 @@ def load_colours():
     return colour_list
 
 
+def load_average_colour_change_time():
+    with open(AVERAGE_CHANGE_TIME_NAME, "r") as average_time:
+        lines = reader(average_time)
+        header = next(lines)
+
+        list_average_change_time = []
+        join_colour_1_and_2 = []
+
+        for line in average_time:
+            list_average_change_time.append(line[0:-1])
+            c1 = line[0:8]
+            inter_caracter = "-"
+            c2 = line[9:17]
+            #tendríamos que crear otra columna 
+            string_colours = c1+inter_caracter+c2
+            join_colour_1_and_2.append(string_colours)
+
+    #print(join_colour_1_and_2)
+    print(list_average_change_time[0])
+
+    return join_colour_1_and_2, list_average_change_time
+
+
+def get_change_colour_time_efficiency(color_1_and_2, change_times_list):
+    #después de hacer el registro
+    registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
+    num_rows = len(registry_file[0])
+
+    last_colour = registry_file[0][num_rows - 1]
+    penultimate_colour = registry_file[0][num_rows - 2]
+
+    concatenate_two_colours = last_colour+"-"+penultimate_colour
+
+    # Buscamos el íncide en la lista que hemos creado con los dos colores concatenados = join_colour_1_and_2
+    index_concatenate_colours = color_1_and_2.index(concatenate_two_colours)
+    #print(index_concatenate_colours)
+
+    # Cuando nos dé el valor del índice, es decir, la posición en la que se encuentran esos colores,
+    #nos vamos a la lista completa de colores y tiempos (list_average_change_time)
+    #y devolvemos el dato del tiempo promedio que ha tenido ese color.
+    average_time_of_colour_change = int((change_times_list[index_concatenate_colours][18:]))
+    #print(average_time_of_colour_change)
+
+    time1 = datetime.strptime(registry_file[1][num_rows - 1][:], "%d/%m/%Y - %H:%M:%S")
+    time2 = datetime.strptime(registry_file[2][num_rows - 1][:], "%d/%m/%Y - %H:%M:%S")
+
+    last_time_change = time2 - time1
+    #print(last_time_change)
+
+    last_time_change_in_seconds = last_time_change.days * 24 * 3600 + last_time_change.seconds
+    #print(last_time_change_in_seconds)
+
+    efficiency_change_last_colour = ((average_time_of_colour_change * 100)/ last_time_change_in_seconds,"%")
+    #print(efficiency_change_last_colour,"%")
+
+    return efficiency_change_last_colour
+
+
 def print_history():
     # Imprimir en el historial.
     # Pasamos el archivo de los registros a una matriz
@@ -246,9 +305,9 @@ def on_register_continue_button_click():
         return
 
     elif hangers_entry.get() == "0":
-    	messagebox.showerror(message="No pueden haber 0 bastidores.",
+        messagebox.showerror(message="No pueden haber 0 bastidores.",
                              title="Error de número de bastidores")
-    	return
+        return
 
     elif is_input_valid:
         get_colour_time_efficiency(colour_start_date_time, colour_end_date_time, hangers_entry)
@@ -259,6 +318,8 @@ def on_register_continue_button_click():
         print_history()
 
     change_start_date_time.set(next_change_start_date_time)
+    a, b = load_average_colour_change_time()
+    get_change_colour_time_efficiency(a, b)
 
 
 def reset_buttons():
@@ -287,7 +348,6 @@ def on_register_stop_button_click():
     # Deben poder poner los minutos de descanso y que se les sume al tiempo del final del últimocolor y se ponga en el tiempo inicia del cambio del siguiente color.
 
 
-# Rendimiento de los bastidores
 def get_colour_time_efficiency(start_datetime_as_string, end_datetime_as_string, amount_of_hangers_as_string):
     # Convierto los entrys en fechas para poder restarlas.
     start_colour = datetime.strptime(start_datetime_as_string.get(), "%d/%m/%Y - %H:%M:%S")
@@ -360,7 +420,7 @@ a.plot(x, y, marker="o")
 a.set_xlabel("Colores")
 a.set_ylabel("Rendimient (%)")
 a.set_title("Rendimiento color")
-a.legend()
+#a.legend()
 a.grid()
 
 # Creating Canvas
