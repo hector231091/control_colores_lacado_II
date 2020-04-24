@@ -74,7 +74,20 @@ def validate_hangers(text, new_text):
     return text.isdecimal()
 
 
-def validate_observations(new_text):
+def validate_observations(text, new_text):
+	# Lo mismo que en los anteriores, me funciona todo por separado pero junto no.
+    if colour_entry.get() == "OTRO":
+    	if observations_entry.get() in load_colours():
+    		led_observations.to_green(on=True)
+    	else:
+    		led_observation.to_blue(on=True)
+    """	
+    if observations_entry.get() in load_colours():
+    	led_observations.to_green(on=True)
+    else:
+    	led_observations.to_red(on=True)
+    """
+
     if len(new_text) > 50:
         return False
 
@@ -372,6 +385,10 @@ led_hangers = tk_tools.Led(root, size=30)  # No sé cómo hacerlo funcionar.
 led_hangers.place(relx=0.73, rely=0.1)
 led_hangers.to_red(on=True)
 
+led_observations = tk_tools.Led(root, size=30)  # No sé cómo hacerlo funcionar.
+led_observations.place(relx=0.9, rely=0.1)
+led_observations.to_red(on=True)
+
 # registry_number=0 #Debería ser el número de registro más alto que tengamos en el excel, para que así al cerrar y abrir puedan ser consecutivos.
 
 # Variables a utilizar.
@@ -379,6 +396,7 @@ final_colour = StringVar()
 change_start_date_time = StringVar()
 colour_start_date_time = StringVar()
 colour_end_date_time = StringVar()
+final_observation = StringVar()
 
 # Definir las variables de cada una de las celdas del historial
 
@@ -494,8 +512,9 @@ observations_label = Label(root, text="Observaciones", anchor="center", relief="
 observations_label.place(relx=0.835, rely=0.01, relwidth=0.155, relheigh=0.045)
 observations_entry = Entry(root,
                            justify="center",
-                           validate="key",
-                           validatecommand=(root.register(validate_observations), "%P"))
+                           validate="focusout",
+                           validatecommand=(root.register(validate_observations), "%S", "%P"),
+                           textvariable=final_observation)
 observations_entry.place(relx=0.835, rely=0.06, relwidth=0.155, relheigh=0.045)
 
 # Botón Registrar y FIN
