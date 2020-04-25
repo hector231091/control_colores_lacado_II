@@ -300,23 +300,23 @@ def on_register_continue_button_click():
         if colour_entry.get() == "OTRO" and observations_entry.get() == "":
             messagebox.showerror(message="Si no me pones el color... ponlo en las observaciones :)",
                                  title="Falta poner el color en las observaciones")
-            return
+            return -1
 
         else:
             messagebox.showerror(message="El color que se ha introducido no existe.\n\n"
                                          "Por favor, introduce un color válido y vuelve a registrar.",
                                  title="Color inválido")
-            return
+            return -1
 
     elif is_any_input_empty:
         messagebox.showerror(message="Faltan algún dato por completar",
                              title="Algo no me cuadra...")
-        return
+        return -1
 
     elif hangers_entry.get() == "0":
         messagebox.showerror(message="No pueden haber 0 bastidores.",
                              title="Error de número de bastidores")
-        return
+        return -1
 
     elif is_input_valid:
         get_colour_time_efficiency(colour_start_date_time, colour_end_date_time, hangers_entry)
@@ -346,12 +346,24 @@ def reset_leds():
 
 
 def on_register_end_button_click():
-    on_register_continue_button_click  # Si la pongo en la línea 214 hace justo lo que quiero pero no con el botón que quiero, en cambio si la pongo en la línea 220 no me hace nada...tiene que ver con el return??
-    final_colour.set("FIN")
+	if 	on_register_continue_button_click() != -1:
+		print("Caso 1")
+		final_colour.set("FIN")
+		led_colour.to_green(on=True)
+		register_button.config(state=DISABLED)
+		register_stop_button.config(state=DISABLED)
+		register_end_button.config(state=DISABLED)
+		close.config(state=NORMAL)
+		close.config(bg="green")
+	else:
+		return
 
 
 def on_register_stop_button_click():
-    on_register_button_click
+    if on_register_continue_button_click() != 1:
+    	on_close_click()
+    else:
+    	return
 
     # Deben poder poner los minutos de descanso y que se les sume al tiempo del final del últimocolor y se ponga en el tiempo inicia del cambio del siguiente color.
 
@@ -384,18 +396,24 @@ def get_colour_time_efficiency(start_datetime_as_string, end_datetime_as_string,
 
 
 def on_close_click():
-    if colour_entry.get() == "" and change_start_date_time.get() == "" and colour_start_date_time.get() == "" and colour_end_date_time.get() == "" and hangers_entry.get() == "" and observations_entry.get() == "":
-        closing_message = messagebox.askquestion(
-            message="¿Seguro que quieres salir?",
-            title="Cierre del programa")
-        if closing_message == "yes":
-            root.destroy()
-        else:
-            messagebox.showinfo(message="Ya te querías ir eh...venga, a currar!!")
+    closing_message = messagebox.askquestion(message="¿Seguro que quieres salir?",
+    										 title="Cierre del programa")
+    if closing_message == "yes":
+        root.destroy()
     else:
-        messagebox.showerror(
-            message="Para poder salir debes registrar todos los datos o borrarlos.\n\nNo te habrás dejado algo por registrar verdad...??",
-            title="Cierre del programa")
+        continue_or_not = messagebox.askquestion(message="Si no quieres cerrar\n¿Quieres registrar y continuar con otro color?",
+    						   title="Aclárate!, ¿Qué quieres hacer?")
+        if continue_or_not == "No":
+        	messagebox.showinfo(message="Entonces es que no quieres irte. Nos vemos otro día",
+    						   title="Hasta pronto")
+        	root.destroy()
+        else:
+        	messagebox.showinfo(message="Bueno, pues entonces registramos la línea\nque has puesto y continuamos con otro color",
+    						   title="Venga, vamos a continuar")
+        	if on_register_continue_button_click() != 1:
+        		on_close_click()
+        	else:
+        		return
 
 root = tk.Tk()
 root.title("REGISTROS COLORES LACADO II")
@@ -515,7 +533,7 @@ x4 = x3 + 0.1524
 x5 = x4 + 0.1524
 x6 = x5 + 0.1524
 x7 = x6 + 0.1524
-xcerrar = 295
+xclose = 0.85
 
 y1 = 0.35
 y2 = y1 + 0.05
@@ -524,7 +542,7 @@ y4 = y3 + 0.05
 y5 = y4 + 0.05
 y6 = y5 + 0.05
 y7 = y6 + 0.05
-yclose = 0.8
+yclose = 0.75
 
 # Registro de datos.
 colour_label = Label(root, text="Color", anchor="center", relief="groove")
@@ -572,16 +590,21 @@ observations_entry.place(relx=0.835, rely=0.06, relwidth=0.155, relheigh=0.045)
 register_end_button = Button(root,
                              text="Registrar y FIN",
                              activebackground="green",
-                             command=on_register_end_button_click)
+                             command=on_register_end_button_click, 
+                             state=NORMAL)
 register_end_button.place(relx=0.072, rely=0.17, relwidth=0.2, relheigh=0.07)
 
 # Botón Registrar
-register_button = Button(root, text="Registrar y continuar", activebackground="green",
-                         command=on_register_continue_button_click)
+register_button = Button(root, text="Registrar y CONTINUAR", 
+							   activebackground="green",
+							   command=on_register_continue_button_click)
 register_button.place(relx=0.39, rely=0.17, relwidth=0.2, relheigh=0.07)
 
 # Botón Registrar y DESCANSO
-register_stop_button = Button(root, text="Registrar y PARADA", activebackground="green", command=on_register_stop_button_click)
+register_stop_button = Button(root, text="Registrar y DESCANSO",
+									activebackground="green", 
+									command=on_register_stop_button_click,
+									state=NORMAL)
 register_stop_button.place(relx=0.72, rely=0.17, relwidth=0.2, relheigh=0.07)
 
 # Historial de los registros anteriores.
@@ -748,35 +771,52 @@ L_5_6 = Label(root, background="white", textvariable=L56, relief="groove")
 L_5_6.place(relx=x7, rely=y6, relwidth=0.1392, relheigh=0.0476)
 
 # Botón para cerrar ventana. Ver si finalmente es necesario o no.
-# close = Button(root, text="Cerrar", activebackground="red", command=on_close_click)
+close = Button(root, text="Registrar y CERRAR",
+					 activebackground="red",
+					 command=on_close_click,
+					 bg="grey",
+					 fg="white",
+					 font=("Comic Sans MS", 12), state=DISABLED)
 # close.place(relx=xcerrar/xroot, y=yclose, relwidth=200/xroot, heigh=50)
-# close.place(relx=x1, rely=yclose, relwidth=0.2, relheigh=0.1)
+close.place(relx=xclose, rely=yclose, relwidth=0.135, relheigh=0.15)
 
 # Mostrar el rendimiento del último color.
 efficiency_colour_title = Label(root, text="Rendimiento del último color", relief="groove")
 efficiency_colour_title.place(relx=x1, rely=0.655, relwidth=0.23, relheigh=0.05)
 
-efficiency_colour_colour_1 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_1)
+efficiency_colour_colour_1 = Label(root, text="Rendimiento del cambio de color",
+										 relief="groove",
+										 textvariable=colour_1,
+										 font=("Comic Sans MS", 15))
 efficiency_colour_colour_1.place(relx=x1, rely=0.71, relwidth=0.1, relheigh=0.07)
-efficiency_colour_colour_1.config(font=("Comic Sans MS",15))
 
-efficiency_colour_result = Label(root, text="Rendimiento del cambio de color", relief="groove", background="white", textvariable=show_efficiency_hangers)
+efficiency_colour_result = Label(root, text="Rendimiento del cambio de color", 
+									   relief="groove", 
+									   background="white", 
+									   textvariable=show_efficiency_hangers, 
+									   font=("Comic Sans MS", 30))
 efficiency_colour_result.place(relx=x1+0.1, rely=0.71, relwidth=0.13, relheigh=0.07)
-efficiency_colour_result.config(font=("Comic Sans MS",30))
 
 efficiency_change_colour_title = Label(root, text="Rendimiento del último cambio de color", relief="groove")
 efficiency_change_colour_title.place(relx=x1, rely=0.785, relwidth=0.23, relheigh=0.05)
 
-efficiency_change_colour_1 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_1)
+efficiency_change_colour_1 = Label(root, text="Rendimiento del cambio de color",
+										 relief="groove", 
+										 textvariable=colour_1, 
+										 font=("Comic Sans MS", 15))
 efficiency_change_colour_1.place(relx=x1, rely=0.84, relwidth=0.1, relheigh=0.06)
-efficiency_change_colour_1.config(font=("Comic Sans MS",15))
 
-efficiency_change_colour_2 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_2)
+efficiency_change_colour_2 = Label(root, text="Rendimiento del cambio de color", 
+										 relief="groove", 
+										 textvariable=colour_2, 
+										 font=("Comic Sans MS", 15))
 efficiency_change_colour_2.place(relx=x1, rely=0.9, relwidth=0.1, relheigh=0.06)
-efficiency_change_colour_2.config(font=("Comic Sans MS",15))
 
-efficiency_change_colour_result = Label(root, text="Rendimiento del cambio de color", relief="groove", background="white", textvariable=show_efficiency_change_colour)
+efficiency_change_colour_result = Label(root, text="Rendimiento del cambio de color", 
+											  relief="groove",
+											  background="white",
+											  textvariable=show_efficiency_change_colour,
+											  font=("Comic Sans MS", 15))
 efficiency_change_colour_result.place(relx=x1+0.1, rely=0.84, relwidth=0.13, relheigh=0.12)
-efficiency_change_colour_result.config(font=("Comic Sans MS",15))
 
 root.mainloop()
