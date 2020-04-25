@@ -9,6 +9,9 @@ import pandas as pd
 import tk_tools
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from matplotlib import pyplot as plt
+from matplotlib import style
+import matplotlib.animation as animation
 
 # Constantes
 REGISTRY_FILE_NAME = "Registro.csv"
@@ -160,8 +163,7 @@ def load_average_colour_change_time():
 
 def get_change_colour_time_efficiency(color_1_and_2, change_times_list):
     
-    registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
-    num_rows = len(registry_file[0])
+    num_rows, registry_file = load_history()
 
     last_colour = registry_file[0][num_rows - 1]
     penultimate_colour = registry_file[0][num_rows - 2]
@@ -204,8 +206,8 @@ def load_history():
 def print_history():
     # Imprimir en el historial.
     # Pasamos el archivo de los registros a una matriz
-    registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
-    num_rows = len(registry_file[0])
+
+    num_rows, registry_file = load_history()
 
     colour_1.set(registry_file[0][num_rows - 1])
     colour_2.set(registry_file[0][num_rows - 2])
@@ -395,7 +397,6 @@ def on_close_click():
             message="Para poder salir debes registrar todos los datos o borrarlos.\n\nNo te habrás dejado algo por registrar verdad...??",
             title="Cierre del programa")
 
-
 root = tk.Tk()
 root.title("REGISTROS COLORES LACADO II")
 #xroot = 790
@@ -409,34 +410,10 @@ root.title("REGISTROS COLORES LACADO II")
 # root.iconbitmap("Gaviota.ico")
 root.state("zoomed")
 
-# Frame para el gráfico.
+# Lugar en el que se debe hacer el gráfico
 graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")
 graphic.place(relx=0.25, rely=0.655, relwidth=0.6, relheight=0.34)
 
-# Cargamos el historial para poder tener los últimos datos y crear la gráfica.
-registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
-num_rows = len(registry_file[0])
-
-# Es necesario poner más columnas en el historial para poder hacer el gráfico. Ver si lo puedo hacer como lo hago en lo de la temperatura.
-# Crear figura del gráfico.
-figure = Figure(figsize=(25, 10), dpi=100)
-x = [registry_file[0][num_rows - 5], registry_file[0][num_rows - 4], registry_file[0][num_rows - 3], registry_file[0][num_rows - 2], registry_file[0][num_rows - 1]]
-y = [1.3, 0.75, 0.6, 0.85, 1.05]
-
-# Poner el gráfico en la figura creada.
-a = figure.add_subplot(111)
-a.plot(x, y, marker="o")
-a.set_xlabel("Colores")
-a.set_ylabel("Rendimient (%)")
-a.set_title("Rendimiento color")
-#a.legend()
-a.grid()
-
-# Creating Canvas
-canv = FigureCanvasTkAgg(figure, master=graphic)
-canv.draw()
-get_widz = canv.get_tk_widget()
-get_widz.pack()
 
 led_colour = tk_tools.Led(root, size=30)  # No sé cómo hacerlo funcionar.
 led_colour.place(relx=0.07, rely=0.1)
