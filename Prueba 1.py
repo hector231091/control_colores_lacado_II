@@ -133,7 +133,6 @@ def load_colours():
         for line in colour:
             # lista_colores.append(linea)
             colour_list.append(line[0:8])
-    # Añadir la palabra FIN a la lista de los colores
     colour_list.append("FIN")
     colour_list.append("OTRO")
     return colour_list
@@ -156,47 +155,50 @@ def load_average_colour_change_time():
             string_colours = c1+inter_caracter+c2
             join_colour_1_and_2.append(string_colours)
 
-    #print(join_colour_1_and_2)
-    #print(list_average_change_time[0])
-
     return join_colour_1_and_2, list_average_change_time
 
 
 def get_change_colour_time_efficiency(color_1_and_2, change_times_list):
-    #después de hacer el registro
+    
     registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
     num_rows = len(registry_file[0])
 
     last_colour = registry_file[0][num_rows - 1]
     penultimate_colour = registry_file[0][num_rows - 2]
 
-    concatenate_two_colours = last_colour+"-"+penultimate_colour
+    concatenate_two_colours = penultimate_colour+"-"+last_colour
 
-    # Buscamos el íncide en la lista que hemos creado con los dos colores concatenados = join_colour_1_and_2
-    index_concatenate_colours = color_1_and_2.index(concatenate_two_colours)
-    #print(index_concatenate_colours)
+    try:
+        index_concatenate_colours = color_1_and_2.index(concatenate_two_colours)
+        calculate_efficiency_change_colour(index_concatenate_colours)
+        show_efficiency_change_colour.set(calculate_efficiency_change_colour(index_concatenate_colours))
+    except ValueError:
+        show_efficiency_change_colour.set("No hay datos\nanteriores con lo\nque comparar.")
 
-    # Cuando nos dé el valor del índice, es decir, la posición en la que se encuentran esos colores,
-    #nos vamos a la lista completa de colores y tiempos (list_average_change_time)
-    #y devolvemos el dato del tiempo promedio que ha tenido ese color.
-    average_time_of_colour_change = int((change_times_list[index_concatenate_colours][18:]))
-    #print(average_time_of_colour_change)
 
+def calculate_efficiency_change_colour(color_position_in_the_list):
+
+    color_1_and_2, change_times_list = load_average_colour_change_time()
+
+    num_rows, registry_file = load_history()
+
+    average_time_of_colour_change = int((change_times_list[color_position_in_the_list][18:]))
     time1 = datetime.strptime(registry_file[1][num_rows - 1][:], "%d/%m/%Y - %H:%M:%S")
     time2 = datetime.strptime(registry_file[2][num_rows - 1][:], "%d/%m/%Y - %H:%M:%S")
 
     last_time_change = time2 - time1
-    #print(last_time_change)
 
     last_time_change_in_seconds = last_time_change.days * 24 * 3600 + last_time_change.seconds
-    #print(last_time_change_in_seconds)
 
     efficiency_change_last_colour = str(int((average_time_of_colour_change * 100)/ last_time_change_in_seconds))+" %"
-    #print(efficiency_change_last_colour,"%")
-
-    show_efficiency_change_colour.set(efficiency_change_last_colour)
-
     return efficiency_change_last_colour
+
+
+def load_history():
+    registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
+    num_rows = len(registry_file[0])
+
+    return num_rows, registry_file
 
 
 def print_history():
@@ -321,10 +323,9 @@ def on_register_continue_button_click():
         reset_leds()
         clear_input()
         print_history()
-
-    change_start_date_time.set(next_change_start_date_time)
-    a, b = load_average_colour_change_time()
-    get_change_colour_time_efficiency(a, b)
+        change_start_date_time.set(next_change_start_date_time)
+        a, b = load_average_colour_change_time()
+        get_change_colour_time_efficiency(a, b)
 
 
 def reset_buttons():
@@ -372,7 +373,6 @@ def get_colour_time_efficiency(start_datetime_as_string, end_datetime_as_string,
     # Eficiencia del paso de bastidores de este color.
     efficiency_hangers = hangers / max_hangers_in_time_colour
 
-    # print(efficiency_hangers*100,"%")
     # round(number,1) sirve para redondear un flotante al decimal que queramos
     percentage_efficiency_hangers = str(int(efficiency_hangers*100))+" %"
 
@@ -396,11 +396,6 @@ def on_close_click():
             title="Cierre del programa")
 
 
-# Mostrar todas las líneas que se han introducido por la pantalla.
-
-# Capacidad de poder borrar/modificar o en su defecto agregar una observación a las líneas que ya se han introducido
-# por si ha habido algún error.
-
 root = tk.Tk()
 root.title("REGISTROS COLORES LACADO II")
 #xroot = 790
@@ -418,9 +413,14 @@ root.state("zoomed")
 graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")
 graphic.place(relx=0.25, rely=0.655, relwidth=0.6, relheight=0.34)
 
+# Cargamos el historial para poder tener los últimos datos y crear la gráfica.
+registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None)
+num_rows = len(registry_file[0])
+
+# Es necesario poner más columnas en el historial para poder hacer el gráfico. Ver si lo puedo hacer como lo hago en lo de la temperatura.
 # Crear figura del gráfico.
 figure = Figure(figsize=(25, 10), dpi=100)
-x = ["4010016", "4010001", "4010017", "4010354", "4010236"]
+x = [registry_file[0][num_rows - 5], registry_file[0][num_rows - 4], registry_file[0][num_rows - 3], registry_file[0][num_rows - 2], registry_file[0][num_rows - 1]]
 y = [1.3, 0.75, 0.6, 0.85, 1.05]
 
 # Poner el gráfico en la figura creada.
@@ -454,15 +454,13 @@ led_colour_end_time = tk_tools.Led(root, size=30)
 led_colour_end_time.place(relx=0.56, rely=0.1)
 led_colour_end_time.to_red(on=True)
 
-led_hangers = tk_tools.Led(root, size=30)  # No sé cómo hacerlo funcionar.
+led_hangers = tk_tools.Led(root, size=30)
 led_hangers.place(relx=0.73, rely=0.1)
 led_hangers.to_red(on=True)
 
 led_observations = tk_tools.Led(root, size=30)  # No sé cómo hacerlo funcionar.
 led_observations.place(relx=0.9, rely=0.1)
 led_observations.to_red(on=True)
-
-# registry_number=0 #Debería ser el número de registro más alto que tengamos en el excel, para que así al cerrar y abrir puedan ser consecutivos.
 
 # Variables a utilizar.
 final_colour = StringVar()
@@ -476,7 +474,6 @@ colour_2 = StringVar()
 show_efficiency_change_colour = StringVar()
 
 # Definir las variables de cada una de las celdas del historial
-
 L00 = StringVar()
 L01 = StringVar()
 L02 = StringVar()
@@ -773,7 +770,7 @@ L_5_5.place(relx=x6, rely=y6, relwidth=0.1392, relheigh=0.0476)
 L_5_6 = Label(root, background="white", textvariable=L56, relief="groove")
 L_5_6.place(relx=x7, rely=y6, relwidth=0.1392, relheigh=0.0476)
 
-# Botón para cerrar ventana
+# Botón para cerrar ventana. Ver si finalmente es necesario o no.
 # close = Button(root, text="Cerrar", activebackground="red", command=on_close_click)
 # close.place(relx=xcerrar/xroot, y=yclose, relwidth=200/xroot, heigh=50)
 # close.place(relx=x1, rely=yclose, relwidth=0.2, relheigh=0.1)
@@ -782,9 +779,9 @@ L_5_6.place(relx=x7, rely=y6, relwidth=0.1392, relheigh=0.0476)
 efficiency_colour_title = Label(root, text="Rendimiento del último color", relief="groove")
 efficiency_colour_title.place(relx=x1, rely=0.655, relwidth=0.23, relheigh=0.05)
 
-efficiency_colour_colour_2 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_2)
-efficiency_colour_colour_2.place(relx=x1, rely=0.71, relwidth=0.1, relheigh=0.07)
-efficiency_colour_colour_2.config(font=("Comic Sans MS",15))
+efficiency_colour_colour_1 = Label(root, text="Rendimiento del cambio de color", relief="groove", textvariable=colour_1)
+efficiency_colour_colour_1.place(relx=x1, rely=0.71, relwidth=0.1, relheigh=0.07)
+efficiency_colour_colour_1.config(font=("Comic Sans MS",15))
 
 efficiency_colour_result = Label(root, text="Rendimiento del cambio de color", relief="groove", background="white", textvariable=show_efficiency_hangers)
 efficiency_colour_result.place(relx=x1+0.1, rely=0.71, relwidth=0.13, relheigh=0.07)
