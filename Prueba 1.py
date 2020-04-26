@@ -346,17 +346,21 @@ def reset_leds():
 
 
 def on_register_end_button_click():
-	if 	on_register_continue_button_click() != -1:
-		print("Caso 1")
-		final_colour.set("FIN")
-		led_colour.to_green(on=True)
-		register_button.config(state=DISABLED)
-		register_stop_button.config(state=DISABLED)
-		register_end_button.config(state=DISABLED)
-		close.config(state=NORMAL)
-		close.config(bg="green")
-	else:
-		return
+    if  on_register_continue_button_click() != -1:
+        colour_start_date_time.set(change_start_date_time.get())
+        change_start_time_button.config(state=DISABLED)
+        colour_start_time_button.config(state=DISABLED)
+        colour_end_time_button.config(state=NORMAL)
+        final_colour.set("FIN")
+        led_colour.to_green(on=True)
+        led_colour_start_time.to_green(on=True)
+        register_button.config(state=DISABLED)
+        register_rest_button.config(state=DISABLED)
+        register_end_button.config(state=DISABLED)
+        close.config(state=NORMAL)
+        close.config(bg="green")
+    else:
+        return
 
 
 def on_register_stop_button_click():
@@ -396,24 +400,14 @@ def get_colour_time_efficiency(start_datetime_as_string, end_datetime_as_string,
 
 
 def on_close_click():
-    closing_message = messagebox.askquestion(message="¿Seguro que quieres salir?",
-    										 title="Cierre del programa")
+    closing_message = messagebox.askquestion(message="¿Seguro que quieres registrar la línea y salir?",
+                                             title="Cierre del programa")
     if closing_message == "yes":
-        root.destroy()
-    else:
-        continue_or_not = messagebox.askquestion(message="Si no quieres cerrar\n¿Quieres registrar y continuar con otro color?",
-    						   title="Aclárate!, ¿Qué quieres hacer?")
-        if continue_or_not == "No":
-        	messagebox.showinfo(message="Entonces es que no quieres irte. Nos vemos otro día",
-    						   title="Hasta pronto")
-        	root.destroy()
+        if on_register_continue_button_click() != -1:
+            root.destroy()
         else:
-        	messagebox.showinfo(message="Bueno, pues entonces registramos la línea\nque has puesto y continuamos con otro color",
-    						   title="Venga, vamos a continuar")
-        	if on_register_continue_button_click() != 1:
-        		on_close_click()
-        	else:
-        		return
+            return
+
 
 root = tk.Tk()
 root.title("REGISTROS COLORES LACADO II")
