@@ -1,7 +1,7 @@
 from tkinter import *
 
 CELL_MARGIN = 10
-CELL_PADDING = 10
+CELL_PADDING = 5
 
 
 class HistoricalView(Frame):

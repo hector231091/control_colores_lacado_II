@@ -10,13 +10,14 @@ import pandas as pd
 from data import Record
 from historical import HistoricalView
 from input_entry import InputView
+from percentage import ShowPercentage
 
 # Constantes
 DATE_TIME_FORMAT = "%d/%m/%Y - %H:%M:%S"
 REGISTRY_FILE_NAME = "Registro.csv"
 COLOURS_FILE_NAME = "Colores.csv"
 AVERAGE_CHANGE_TIME_NAME = "Tiempos de cambio.csv"
-AMOUNT_OF_RECORDS_TO_SHOW = 6
+AMOUNT_OF_RECORDS_TO_SHOW = 4
 
 
 def register_input(input_record):
@@ -286,6 +287,10 @@ historical.pack(fill="both")
 historical.place(relx=x1, rely=0.25, relwidth=0.975, relheigh=0.42)
 print_history()
 
+percentage = ShowPercentage(root)
+percentage.pack(fill="both")
+percentage.place(relx=x1, rely=0.675, relwidth=0.23, relheigh=0.3)
+"""
 # Botón para cerrar ventana. Ver si finalmente es necesario o no.
 register_close_button = Button(root, text="Registrar y CERRAR",
                                activebackground="red",
@@ -334,5 +339,5 @@ efficiency_change_colour_result = Label(root, text="Rendimiento del cambio de co
                                         textvariable=show_efficiency_change_colour,
                                         font=("Comic Sans MS", 15))
 efficiency_change_colour_result.place(relx=x1 + 0.1, rely=0.84, relwidth=0.13, relheigh=0.12)
-
+"""
 root.mainloop()
