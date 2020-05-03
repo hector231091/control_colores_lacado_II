@@ -1,3 +1,6 @@
+import enum
+
+
 class Record:
     def __init__(self,
                  id,
@@ -14,3 +17,31 @@ class Record:
         self.colour_end_time = colour_end_time
         self.hangers_amount = hangers_amount
         self.observations = observations
+
+
+class InputRecord:
+    def __init__(self,
+                 colour_code,
+                 change_start_time,
+                 colour_start_time,
+                 colour_end_time,
+                 hangers_amount,
+                 observations):
+        self.colour_code = colour_code
+        self.change_start_time = change_start_time
+        self.colour_start_time = colour_start_time
+        self.colour_end_time = colour_end_time
+        self.hangers_amount = hangers_amount
+        self.observations = observations
+
+
+class Validation:
+    def __init__(self, v_type, message=""):
+        self.type = v_type
+        self.message = message
+
+
+class ValidationType(enum.Enum):
+    VALID = 1
+    INVALID = 2
+    EMPTY = 3
