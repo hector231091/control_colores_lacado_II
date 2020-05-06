@@ -152,7 +152,8 @@ class InputView(Frame):
         self.observations_entry = Entry(self,
                                         justify="center",
                                         validate="key",
-                                        validatecommand=(self.register(self.__validate_observations_input), '%P'))
+                                        validatecommand=(self.register(self.__validate_observations_input), '%P',),
+                                        state=NORMAL)
         self.observations_entry.grid(row=1,
                                      column=5,
                                      padx=CELL_PADDING,
@@ -178,12 +179,19 @@ class InputView(Frame):
     # Si el campo change_start_date_time no está vacío, lo actualiza como "Hora inicio cambio".
     # Si el campo force_end es True, añadimos "FIN" al color
     def reset(self, change_start_date_time="", force_end=False):
+
         self.__reset_buttons()
         self.__reset_leds()
         self.__clear_input(force_end, change_start_date_time)
 
         if change_start_date_time != "":
             self.__update_ui_on_change_start_time_click()
+        # Al pulsar el botón "Registrar y FIN" los campos a habilitar y deshabilitar son diferentes (tanto botones como LEDs), así que lo actualizo con este "if".
+        if force_end == True:
+            self.colour_start_time_button.config(state=DISABLED)
+            self.colour_end_time_button.config(state=NORMAL)
+            self.led_colour_start_time.to_green(on=True)
+            self.observations_entry.config(state=DISABLED) # Esta línea no funciona y no entiendo muy bien el por qué.
 
     # Devuelve una lista con errores. Si la lista devuelta está vacía, significa que no hay errores.
     # La validación se realiza en el mismo orden en el que se muestran los diferentes campos,
@@ -280,14 +288,21 @@ class InputView(Frame):
 
     def __clear_input(self, force_end, change_start_date_time=""):
         self.colour_entry.delete(0, "end")
-        if force_end:
+        # No acabo de entender esta línea, como que si "Falso"? El qué es falso??
+        if force_end: # Al pulsar el botón "Registrar y FIN", la hora inicio cambio e inicio color se deben actualizar con la hora de fin del color anterior.
             self.colour_entry.insert(0, "FIN")
+            self.change_start_date_time.set(change_start_date_time)
+            self.colour_start_date_time.set(change_start_date_time)
+            self.colour_end_date_time.set("")
+            self.hangers_entry.delete(0, "end")
+            self.observations_entry.delete(0, "end")
 
-        self.change_start_date_time.set(change_start_date_time)
-        self.colour_start_date_time.set("")
-        self.colour_end_date_time.set("")
-        self.hangers_entry.delete(0, "end")
-        self.observations_entry.delete(0, "end")
+        else:
+            self.change_start_date_time.set(change_start_date_time)
+            self.colour_start_date_time.set("")
+            self.colour_end_date_time.set("")
+            self.hangers_entry.delete(0, "end")
+            self.observations_entry.delete(0, "end")
 
     def __get_now_as_formatted_date_time(self):
         return datetime.now().strftime(DATE_TIME_FORMAT)
