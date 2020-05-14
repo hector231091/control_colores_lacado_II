@@ -168,11 +168,22 @@ def on_register_and_close_click():
             return
 
 
-# def on_register_stop_button_click():
-#     if on_register_continue_button_click() != -1:
-#         on_close_click()
-# Deben poder poner los minutos de descanso y que se les sume al tiempo del final del último color
-# y se ponga en el tiempo inicia del cambio del siguiente color.
+def on_register_stop_button_click():
+
+    # Si hay errores, mostramos un cuadro de diálogo al usuario y retornamos ejecución
+    errors = inputView.is_input_valid()
+    if len(errors) != 0:
+        messagebox.showerror(message=errors[0], title="¡ERROR!")
+        return -1
+
+    input_record = inputView.get_input()
+    inputView.reset_break(input_record.colour_end_time)
+
+    register_input(input_record)
+    print_history()
+    a, b = load_average_colour_change_time()
+    num_rows, registry_file = load_history()
+    percentage.get_change_colour_time_efficiency(a, b, num_rows, registry_file)
 
 
 root = tk.Tk()
@@ -201,7 +212,7 @@ show_efficiency_change_colour = StringVar()
 # Variables de la posición de los cuadros de "Registrar" hacia abajo
 x1 = 0.01
 xclose = 0.85
-yclose = 0.75
+yclose = 0.85
 
 inputView = InputView(root, load_colours())
 inputView.pack(fill="both")
@@ -213,7 +224,7 @@ register_end_button = Button(root,
                              activebackground="green",
                              command=on_register_end_button_click,
                              state=NORMAL)
-register_end_button.place(relx=0.072, rely=0.17, relwidth=0.2, relheigh=0.07)
+register_end_button.place(relx=0.8, rely=0.93, relwidth=0.2, relheigh=0.07)
 
 # Botón Registrar y CONTINUAR
 register_button = Button(root,
@@ -223,12 +234,12 @@ register_button = Button(root,
 register_button.place(relx=0.39, rely=0.17, relwidth=0.2, relheigh=0.07)
 
 # Botón Registrar y DESCANSO
-# register_stop_button = Button(root,
-#                               text="Registrar y DESCANSO",
-#                               activebackground="green",
-#                               command=on_register_stop_button_click,
-#                               state=NORMAL)
-# register_stop_button.place(relx=0.72, rely=0.17, relwidth=0.2, relheigh=0.07)
+register_stop_button = Button(root,
+                              text="Registrar y DESCANSO",
+                              activebackground="green",
+                              command=on_register_stop_button_click,
+                              state=NORMAL)
+register_stop_button.place(relx=0.01, rely=0.93, relwidth=0.2, relheigh=0.07)
 
 # Historial de los registros anteriores.
 historical = HistoricalView(root, AMOUNT_OF_RECORDS_TO_SHOW)
@@ -238,7 +249,7 @@ print_history()
 
 percentage = ShowPercentage(root)
 percentage.pack(fill="both")
-percentage.place(relx=x1, rely=0.75, relwidth=0.23, relheigh=0.3)
+percentage.place(relx=0.4, rely=0.75, relwidth=0.3, relheigh=0.3)
 
 # Botón para cerrar ventana. Ver si finalmente es necesario o no.
 register_close_button = Button(root, text="Registrar y CERRAR",
@@ -248,6 +259,6 @@ register_close_button = Button(root, text="Registrar y CERRAR",
                                fg="white",
                                font=("Comic Sans MS", 12),
                                state=DISABLED)
-register_close_button.place(relx=xclose, rely=yclose, relwidth=0.135, relheigh=0.15)
+register_close_button.place(relx=0.6, rely=yclose, relwidth=0.135, relheigh=0.15)
 
 root.mainloop()

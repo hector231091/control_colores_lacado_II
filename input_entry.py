@@ -193,6 +193,14 @@ class InputView(Frame):
             self.led_colour_start_time.to_green(on=True)
             self.observations_entry.config(state=DISABLED) # Esta línea no funciona y no entiendo muy bien el por qué.
 
+    def reset_break(self, change_start_date_time="", force_end=False):
+
+        self.__reset_buttons()
+        self.__reset_leds()
+        self.__clear_input_break(change_start_date_time)
+
+        # Al pulsar el botón "Registrar y FIN" los campos a habilitar y deshabilitar son diferentes (tanto botones como LEDs), así que lo actualizo con este "if".
+
     # Devuelve una lista con errores. Si la lista devuelta está vacía, significa que no hay errores.
     # La validación se realiza en el mismo orden en el que se muestran los diferentes campos,
     # es decir, se valida el color y después la hora de inicio de cambio y así sucesivamente.
@@ -303,6 +311,16 @@ class InputView(Frame):
             self.colour_end_date_time.set("")
             self.hangers_entry.delete(0, "end")
             self.observations_entry.delete(0, "end")
+
+    # Como la función anterior no entiendo bien cómo funciona...hago una nueva para el descanso.
+    def __clear_input_break(self, change_start_date_time=""):
+        self.colour_entry.delete(0, "end")
+        self.change_start_date_time.set("")
+        self.colour_start_date_time.set("")
+        self.colour_end_date_time.set("")
+        self.hangers_entry.delete(0, "end")
+        self.observations_entry.delete(0, "end")
+
 
     def __get_now_as_formatted_date_time(self):
         return datetime.now().strftime(DATE_TIME_FORMAT)

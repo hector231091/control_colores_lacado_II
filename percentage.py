@@ -102,4 +102,4 @@ class ShowPercentage(Frame):
         last_time_change_in_seconds = last_time_change.days * 24 * 3600 + last_time_change.seconds
 
         efficiency_change_last_colour = str(int((average_time_of_colour_change * 100) / last_time_change_in_seconds)) + " %"
-        return efficiency_change_last_colou
+        return efficiency_change_last_colour
