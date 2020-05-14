@@ -262,3 +262,13 @@ register_close_button = Button(root, text="Registrar y CERRAR",
 register_close_button.place(relx=0.6, rely=yclose, relwidth=0.135, relheigh=0.15)
 
 root.mainloop()
+
+# Cosas para hacer:
+    # 1.- Poner una celda para que salga el nombre del color cuando lo han registrado. El funcionamiento sería igual que el LED.
+    # 2.- Crear un botón que abra una pantalla para poder registrar un nuevo color. Tendrían que añadir él cógido del color y el nombre
+    #     y al registrar que lo añada en los colores.
+    # 3.- Botón de "Registrar y DESCANSO":
+    #       i) Preguntar si van a continuar con el mismo color.
+    #               a) Respuesta = SÍ: Poner el color en la casilla y cuando pulsen el botón para poner la hora del cambio,
+    #                                  que se ponga también la de inicio.
+    #               b) Respuesta = NO: Poner todo en blanco conforme está ahora mismo, para que ellos empiecen igual que si comenzara un día nuevo.
