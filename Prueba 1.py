@@ -13,11 +13,11 @@ from input_entry import InputView
 from percentage import ShowPercentage
 
 # Constantes
-DATE_TIME_FORMAT = "%d/%m/%Y - %H:%M:%S"
+DATE_TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 REGISTRY_FILE_NAME = "Registro.csv"
 COLOURS_FILE_NAME = "Colores.csv"
 AVERAGE_CHANGE_TIME_NAME = "Tiempos de cambio.csv"
-AMOUNT_OF_RECORDS_TO_SHOW = 4
+AMOUNT_OF_RECORDS_TO_SHOW = 7
 
 
 def register_input(input_record):
@@ -96,9 +96,9 @@ def print_history():
     for i in range(AMOUNT_OF_RECORDS_TO_SHOW):
         record = Record(num_rows - i,
                         registry_file[0][num_rows - i - 1],
-                        registry_file[1][num_rows - i - 1][13:21],
-                        registry_file[2][num_rows - i - 1][13:21],
-                        registry_file[3][num_rows - i - 1][13:21],
+                        registry_file[1][num_rows - i - 1][11:21],
+                        registry_file[2][num_rows - i - 1][11:21],
+                        registry_file[3][num_rows - i - 1][11:21],
                         registry_file[4][num_rows - i - 1],
                         registry_file[5][num_rows - i - 1])
         records.append(record)
@@ -155,6 +155,7 @@ def on_register_end_button_click():
 
     register_button.config(state=DISABLED)
     register_end_button.config(state=DISABLED)
+    register_stop_button.config(state=DISABLED)
     register_close_button.config(state=NORMAL, bg="green")
 
 
@@ -216,7 +217,7 @@ yclose = 0.85
 
 inputView = InputView(root, load_colours())
 inputView.pack(fill="both")
-inputView.place(relx=x1, rely=0.01, relwidth=0.975, relheigh=0.17)
+inputView.place(relx=x1, rely=0.01, relwidth=0.975, relheigh=0.25)
 
 # Botón Registrar y FIN
 register_end_button = Button(root,

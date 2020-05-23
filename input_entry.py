@@ -1,5 +1,6 @@
 from datetime import datetime
 from tkinter import *
+from csv import reader
 
 import tk_tools
 
@@ -8,7 +9,8 @@ from data import InputRecord, ValidationType
 
 CELL_MARGIN = 10
 CELL_PADDING = 10
-DATE_TIME_FORMAT = "%d/%m/%Y - %H:%M:%S"
+DATE_TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
+COLOURS_FILE_NAME = "Colores.csv"
 
 
 class InputView(Frame):
@@ -17,6 +19,7 @@ class InputView(Frame):
 
         self.colour_list = colour_list
 
+        self.colour_name = StringVar()
         self.change_start_date_time = StringVar()
         self.colour_start_date_time = StringVar()
         self.colour_end_date_time = StringVar()
@@ -44,6 +47,14 @@ class InputView(Frame):
         self.led_colour.grid(row=2, column=0)
         self.led_colour.to_grey(on=True)
         self.grid_columnconfigure(0, weight=1)  # La fila toma el ancho de pantalla
+        self.colour_name_label = Label(self, text=self.colour_name, anchor="center", relief="groove")
+        self.colour_name_label.grid(row=3,
+                                    column=0,
+                                    padx=(0, CELL_PADDING),
+                                    pady=CELL_PADDING,
+                                    ipadx=CELL_MARGIN,
+                                    ipady=CELL_MARGIN,
+                                    sticky=W + E + N + S)
 
         self.change_start_time_button = Button(self,
                                                text="Hora inicio cambio",
@@ -255,6 +266,10 @@ class InputView(Frame):
         validation = validator.validate_colour(final_value_if_allowed, self.colour_list)
         self.__update_led_by_validation_type(self.led_colour, validation.type)
 
+        # Actualizamos el nombre del color. No funciona, ver cómo lo tengo que hacer.
+        dict_name_code_colour = self.__name_colour()
+        self.colour_name.set(dict_name_code_colour.get(final_value_if_allowed))
+
         return True
 
     def __validate_hangers_input(self, value_if_allowed, input_text):
@@ -332,3 +347,29 @@ class InputView(Frame):
             led.to_red(on=True)
         else:
             led.to_green(on=True)
+
+
+    def __name_colour(self):
+
+        with open(COLOURS_FILE_NAME, "r") as colour:
+            lines = reader(colour)
+            header = next(lines)
+
+            colour_code = []
+            colour_name = []
+            colour_dict = dict()
+
+            # if header!=None:
+            for line in colour:
+                # lista_colores.append(linea)
+                colour_code.append(line[0:8])
+                colour_name.append(line[10:])
+                colour_dict[line[:8]] = line[9:-1]
+
+        colour_code.append("FIN")
+        colour_code.append("OTRO")
+
+        colour_name.append("FIN")
+        colour_name.append("OTRO")
+
+        return colour_dict
