@@ -10,14 +10,13 @@ from data import InputRecord, ValidationType
 
 CELL_MARGIN = 10
 CELL_PADDING = 10
-COLOURS_FILE_NAME = "Colores.csv"
 
 
 class InputView(Frame):
-    def __init__(self, parent, colour_list):
+    def __init__(self, parent, colour_map):
         Frame.__init__(self, parent)
 
-        self.colour_list = colour_list
+        self.colour_map = colour_map
 
         self.colour_name = StringVar()
         self.change_start_date_time = StringVar()
@@ -190,7 +189,6 @@ class InputView(Frame):
     # Si el campo change_start_date_time no está vacío, lo actualiza como "Hora inicio cambio".
     # Si el campo force_end es True, añadimos "FIN" al color
     def reset(self, change_start_date_time="", force_end=False):
-
         self.__reset_buttons()
         self.__reset_leds()
         self.__clear_input(force_end, change_start_date_time)
@@ -198,14 +196,13 @@ class InputView(Frame):
         if change_start_date_time != "":
             self.__update_ui_on_change_start_time_click()
         # Al pulsar el botón "Registrar y FIN" los campos a habilitar y deshabilitar son diferentes (tanto botones como LEDs), así que lo actualizo con este "if".
-        if force_end == True:
+        if force_end:
             self.colour_start_time_button.config(state=DISABLED)
             self.colour_end_time_button.config(state=NORMAL)
             self.led_colour_start_time.to_green(on=True)
             self.observations_entry.config(state=DISABLED) # Esta línea no funciona y no entiendo muy bien el por qué.
 
     def reset_break(self, change_start_date_time="", force_end=False):
-
         self.__reset_buttons()
         self.__reset_leds()
         self.__clear_input_break(change_start_date_time)
@@ -216,7 +213,7 @@ class InputView(Frame):
     # La validación se realiza en el mismo orden en el que se muestran los diferentes campos,
     # es decir, se valida el color y después la hora de inicio de cambio y así sucesivamente.
     def is_input_valid(self):
-        return validator.is_input_valid(self.get_input(), self.colour_list)
+        return validator.is_input_valid(self.get_input(), self.colour_map)
 
     def __on_change_start_time_click(self):
         date = self.__get_now_as_formatted_date_time()
@@ -263,12 +260,15 @@ class InputView(Frame):
             return False
 
         # Actualizamos el led
-        validation = validator.validate_colour(final_value_if_allowed, self.colour_list)
+        validation = validator.validate_colour(final_value_if_allowed, self.colour_map)
         self.__update_led_by_validation_type(self.led_colour, validation.type)
 
-        # Actualizamos el nombre del color.
-        dict_name_code_colour = self.__name_colour()
-        self.colour_name.set(dict_name_code_colour.get(final_value_if_allowed))
+        # Actualizamos el nombre del color
+        colour_name = self.colour_map.get(final_value_if_allowed)
+        if colour_name is not None:
+            self.colour_name.set(colour_name)
+        else:
+            self.colour_name.set("")
 
         return True
 
@@ -336,7 +336,6 @@ class InputView(Frame):
         self.hangers_entry.delete(0, "end")
         self.observations_entry.delete(0, "end")
 
-
     def __get_now_as_formatted_date_time(self):
         return datetime.now().strftime(DATE_TIME_FORMAT)
 
@@ -347,29 +346,3 @@ class InputView(Frame):
             led.to_red(on=True)
         else:
             led.to_green(on=True)
-
-
-    def __name_colour(self):
-
-        with open(COLOURS_FILE_NAME, "r") as colour:
-            lines = reader(colour)
-            header = next(lines)
-
-            colour_code = []
-            colour_name = []
-            colour_dict = dict()
-
-            # if header!=None:
-            for line in colour:
-                # lista_colores.append(linea)
-                colour_code.append(line[0:8])
-                colour_name.append(line[10:])
-                colour_dict[line[:8]] = line[9:-1]
-
-        colour_code.append("FIN")
-        colour_code.append("OTRO")
-
-        colour_name.append("FIN")
-        colour_name.append("OTRO")
-
-        return colour_dict

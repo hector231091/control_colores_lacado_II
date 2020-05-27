@@ -1,5 +1,4 @@
 import tkinter as tk
-from csv import reader
 from tkinter import *
 from tkinter import messagebox
 
@@ -38,19 +37,18 @@ def generate_input_to_register(input_record):
 
 
 def load_colours():
-    with open(COLOURS_FILE_NAME, "r") as colour:
-        lines = reader(colour)
-        header = next(lines)
+    colours_file = pd.read_csv(COLOURS_FILE_NAME, ";", header=None, na_filter=False)
 
-        colour_list = []
+    colour_map = {}
+    for i in range(2, len(colours_file)):
+        code = colours_file[0][i]
+        name = colours_file[1][i]
+        colour_map[code] = name
 
-        # if header!=None:
-        for line in colour:
-            # lista_colores.append(linea)
-            colour_list.append(line[0:8])
-    colour_list.append("FIN")
-    colour_list.append("OTRO")
-    return colour_list
+    colour_map["FIN"] = ["FIN"]
+    colour_map["OTRO"] = ["OTRO"]
+
+    return colour_map
 
 
 def load_average_colour_change_time():

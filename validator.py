@@ -8,10 +8,10 @@ def validate_time(text):
         return Validation(ValidationType.VALID)
 
 
-def validate_colour(text, colour_list):
+def validate_colour(text, colour_map):
     if len(text) == 0:
         return Validation(ValidationType.EMPTY, "El campo \"Color\" está vacío.")
-    elif text in colour_list:
+    elif text in colour_map.keys():
         return Validation(ValidationType.VALID)
     else:
         return Validation(ValidationType.INVALID, "El color que se ha introducido no existe.")
@@ -55,8 +55,8 @@ def validate_observations(text, colour_entry):
 # Devuelve una lista con errores. Si la lista devuelta está vacía, significa que no hay errores.
 # La validación se realiza en el mismo orden en el que se muestran los diferentes campos,
 # es decir, se valida el color y después la hora de inicio de cambio y así sucesivamente.
-def is_input_valid(input_record, colour_list):
-    colour_validation = validate_colour(input_record.colour_code, colour_list)
+def is_input_valid(input_record, colour_map):
+    colour_validation = validate_colour(input_record.colour_code, colour_map)
     change_validation = validate_time(input_record.change_start_time)
     colour_start_validation = validate_time(input_record.colour_start_time)
     colour_end_validation = validate_time(input_record.colour_end_time)

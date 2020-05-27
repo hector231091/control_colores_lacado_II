@@ -43,6 +43,14 @@ class ChangeTime:
         self.time = time
 
 
+class Colour:
+    def __init__(self,
+                 code,
+                 name):
+        self.code = code
+        self.name = name
+
+
 class Validation:
     def __init__(self, v_type, message=""):
         self.type = v_type
