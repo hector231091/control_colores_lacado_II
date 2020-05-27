@@ -101,7 +101,7 @@ class ShowPercentage(Frame):
         self.show_efficiency_hangers.set(percentage_efficiency_hangers)
 
     def __calculate_efficiency_change_colour(self, change_time_by_colour_combo, history_as_records):
-        average_time_of_colour_change = int(change_time_by_colour_combo.time)
+        average_time_of_colour_change = int(change_time_by_colour_combo)
         time1 = datetime.strptime(history_as_records[len(history_as_records) - 1].change_start_time, DATE_TIME_FORMAT)
         time2 = datetime.strptime(history_as_records[len(history_as_records) - 1].colour_start_time, DATE_TIME_FORMAT)
 
