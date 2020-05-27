@@ -35,6 +35,14 @@ class InputRecord:
         self.observations = observations
 
 
+class ChangeTime:
+    def __init__(self,
+                 change,
+                 time):
+        self.change = change
+        self.time = time
+
+
 class Validation:
     def __init__(self, v_type, message=""):
         self.type = v_type

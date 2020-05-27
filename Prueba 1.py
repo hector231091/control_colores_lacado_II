@@ -54,23 +54,16 @@ def load_colours():
 
 
 def load_average_colour_change_time():
-    with open(AVERAGE_CHANGE_TIME_NAME, "r") as average_time:
-        lines = reader(average_time)
-        header = next(lines)
+    average_time_file = pd.read_csv(AVERAGE_CHANGE_TIME_NAME, ";", header=None, na_filter=False)
 
-        average_change_time_list = []
-        colour_1_and_2_list = []
-
-        for line in average_time:
-            average_change_time_list.append(line[0:-1])
-            c1 = line[0:8]
-            inter_caracter = "-"
-            c2 = line[9:17]
-            # tendríamos que crear otra columna
-            string_colours = c1 + inter_caracter + c2  # e.g. 40100100-40100111
-            colour_1_and_2_list.append(string_colours)
-
-    return colour_1_and_2_list, average_change_time_list
+    change_time_list = {}
+    for i in range(2, len(average_time_file)):
+        first_row_colour = average_time_file[0][i]
+        separator = "-"
+        second_row_colour = average_time_file[1][i]
+        string_colours = first_row_colour + separator + second_row_colour  # e.g. "40100100-40100111"
+        change_time_list[string_colours] = average_time_file[2][i]
+    return change_time_list
 
 
 def load_history():
@@ -114,9 +107,9 @@ def on_register_continue_button_click():
 
     register_input(input_record)
     print_history()
-    colour_1_and_2_list, average_change_time_list = load_average_colour_change_time()
+    average_change_time_list = load_average_colour_change_time()
     history_as_records = load_history()
-    percentage.update_change_colour_time_efficiency(colour_1_and_2_list, average_change_time_list, history_as_records)
+    percentage.update_change_colour_time_efficiency(average_change_time_list, history_as_records)
     percentage.update_colour_time_efficiency(input_record.colour_start_time,
                                              input_record.colour_end_time,
                                              input_record.hangers_amount)
@@ -135,9 +128,9 @@ def on_register_end_button_click():
     # Poner en el inicio hora lacado el tiempo que en inicio cambio de color.
     register_input(input_record)
     print_history()
-    colour_1_and_2_list, average_change_time_list = load_average_colour_change_time()
+    average_change_time_list = load_average_colour_change_time()
     history_as_records = load_history()
-    percentage.update_change_colour_time_efficiency(colour_1_and_2_list, average_change_time_list, history_as_records)
+    percentage.update_change_colour_time_efficiency(average_change_time_list, history_as_records)
     percentage.update_colour_time_efficiency(input_record.colour_start_time,
                                              input_record.colour_end_time,
                                              input_record.hangers_amount)
@@ -170,9 +163,9 @@ def on_register_stop_button_click():
 
     register_input(input_record)
     print_history()
-    colour_1_and_2_list, average_change_time_list = load_average_colour_change_time()
+    average_change_time_list = load_average_colour_change_time()
     history_as_records = load_history()
-    percentage.update_change_colour_time_efficiency(colour_1_and_2_list, average_change_time_list, history_as_records)
+    percentage.update_change_colour_time_efficiency(average_change_time_list, history_as_records)
     percentage.update_colour_time_efficiency(input_record.colour_start_time,
                                              input_record.colour_end_time,
                                              input_record.hangers_amount)

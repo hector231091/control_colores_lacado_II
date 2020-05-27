@@ -61,22 +61,16 @@ class ShowPercentage(Frame):
                                                   ipady=CELL_MARGIN,
                                                   sticky=W + E + N + S)
 
-    def update_change_colour_time_efficiency(self,
-                                             color_1_and_2_list,
-                                             change_times_list,
-                                             history_as_records):
+    def update_change_colour_time_efficiency(self, change_times_list, history_as_records):
         last_colour = history_as_records[len(history_as_records) - 1].colour_code
         penultimate_colour = history_as_records[len(history_as_records) - 2].colour_code
         concatenate_two_colours = penultimate_colour + "-" + last_colour
 
-        try:
-            index_concatenate_colours = color_1_and_2_list.index(concatenate_two_colours)
-            efficiency = self.__calculate_efficiency_change_colour(index_concatenate_colours,
-                                                                   change_times_list,
-                                                                   history_as_records)
+        change_time_by_colour_combo = change_times_list.get(concatenate_two_colours, None)
+        if change_time_by_colour_combo is not None:
+            efficiency = self.__calculate_efficiency_change_colour(change_time_by_colour_combo, history_as_records)
             self.show_efficiency_change_colour.set(efficiency)
-
-        except ValueError:
+        else:
             self.show_efficiency_change_colour.set("No hay datos\nanteriores con lo\nque comparar.")
 
     def update_colour_time_efficiency(self,
@@ -106,11 +100,8 @@ class ShowPercentage(Frame):
 
         self.show_efficiency_hangers.set(percentage_efficiency_hangers)
 
-    def __calculate_efficiency_change_colour(self,
-                                             color_position_in_the_list,
-                                             change_times_list,
-                                             history_as_records):
-        average_time_of_colour_change = int((change_times_list[color_position_in_the_list][18:]))
+    def __calculate_efficiency_change_colour(self, change_time_by_colour_combo, history_as_records):
+        average_time_of_colour_change = int(change_time_by_colour_combo.time)
         time1 = datetime.strptime(history_as_records[len(history_as_records) - 1].change_start_time, DATE_TIME_FORMAT)
         time2 = datetime.strptime(history_as_records[len(history_as_records) - 1].colour_start_time, DATE_TIME_FORMAT)
 
