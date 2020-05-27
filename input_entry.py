@@ -47,7 +47,7 @@ class InputView(Frame):
         self.led_colour.grid(row=2, column=0)
         self.led_colour.to_grey(on=True)
         self.grid_columnconfigure(0, weight=1)  # La fila toma el ancho de pantalla
-        self.colour_name_label = Label(self, text=self.colour_name, anchor="center", relief="groove")
+        self.colour_name_label = Label(self, textvariable=self.colour_name, anchor="center", relief="groove")
         self.colour_name_label.grid(row=3,
                                     column=0,
                                     padx=(0, CELL_PADDING),
@@ -266,7 +266,7 @@ class InputView(Frame):
         validation = validator.validate_colour(final_value_if_allowed, self.colour_list)
         self.__update_led_by_validation_type(self.led_colour, validation.type)
 
-        # Actualizamos el nombre del color. No funciona, ver cómo lo tengo que hacer.
+        # Actualizamos el nombre del color.
         dict_name_code_colour = self.__name_colour()
         self.colour_name.set(dict_name_code_colour.get(final_value_if_allowed))
 
