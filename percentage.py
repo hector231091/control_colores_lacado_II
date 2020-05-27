@@ -61,12 +61,12 @@ class ShowPercentage(Frame):
                                                   ipady=CELL_MARGIN,
                                                   sticky=W + E + N + S)
 
-    def update_change_colour_time_efficiency(self, change_times_list, history_as_records):
+    def update_change_colour_time_efficiency(self, change_times_map, history_as_records):
         last_colour = history_as_records[len(history_as_records) - 1].colour_code
         penultimate_colour = history_as_records[len(history_as_records) - 2].colour_code
         concatenate_two_colours = penultimate_colour + "-" + last_colour
 
-        change_time_by_colour_combo = change_times_list.get(concatenate_two_colours, None)
+        change_time_by_colour_combo = change_times_map.get(concatenate_two_colours, None)
         if change_time_by_colour_combo is not None:
             efficiency = self.__calculate_efficiency_change_colour(change_time_by_colour_combo, history_as_records)
             self.show_efficiency_change_colour.set(efficiency)
