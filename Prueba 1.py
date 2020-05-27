@@ -176,9 +176,9 @@ def on_register_stop_button_click():
 
 root = tk.Tk()
 root.title("REGISTROS COLORES LACADO II")
-root.geometry("1600x900")
+# root.geometry("1600x900")
 # root.iconbitmap("Gaviota.ico")
-# root.state("zoomed")
+root.state("zoomed")
 
 # Lugar en el que se debe hacer el gráfico
 # graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")
