@@ -5,11 +5,11 @@ from csv import reader
 import tk_tools
 
 import validator
+from constants import DATE_TIME_FORMAT
 from data import InputRecord, ValidationType
 
 CELL_MARGIN = 10
 CELL_PADDING = 10
-DATE_TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 COLOURS_FILE_NAME = "Colores.csv"
 
 

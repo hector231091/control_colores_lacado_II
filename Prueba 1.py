@@ -1,7 +1,5 @@
-import datetime
 import tkinter as tk
 from csv import reader
-from datetime import datetime
 from tkinter import *
 from tkinter import messagebox
 
@@ -13,7 +11,6 @@ from input_entry import InputView
 from percentage import ShowPercentage
 
 # Constantes
-DATE_TIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 REGISTRY_FILE_NAME = "Registro.csv"
 COLOURS_FILE_NAME = "Colores.csv"
 AVERAGE_CHANGE_TIME_NAME = "Tiempos de cambio.csv"
@@ -70,7 +67,7 @@ def load_average_colour_change_time():
             inter_caracter = "-"
             c2 = line[9:17]
             # tendríamos que crear otra columna
-            string_colours = c1 + inter_caracter + c2
+            string_colours = c1 + inter_caracter + c2  # e.g. 40100100-40100111
             join_colour_1_and_2.append(string_colours)
 
     return join_colour_1_and_2, list_average_change_time
@@ -86,11 +83,7 @@ def load_history():
 def print_history():
     # Imprimir en el historial.
     # Pasamos el archivo de los registros a una matriz
-
     num_rows, registry_file = load_history()
-
-    colour_1.set(registry_file[0][num_rows - 1])
-    colour_2.set(registry_file[0][num_rows - 2])
 
     records = []
     for i in range(AMOUNT_OF_RECORDS_TO_SHOW):
@@ -114,21 +107,15 @@ def on_register_continue_button_click():
 
     input_record = inputView.get_input()
     inputView.reset(input_record.colour_end_time)
-    """
-    percentage.get_colour_time_efficiency(input_record.colour_start_time,
-                                          input_record.colour_end_time,
-                                          input_record.hangers_amount)
-    """
+
     register_input(input_record)
     print_history()
     a, b = load_average_colour_change_time()
     num_rows, registry_file = load_history()
-    percentage.get_change_colour_time_efficiency(a, b, num_rows, registry_file)
-
-        # Para hacerlo necesito coger tres variables que no sé cómo cogerlas exactamente.
-    """percentage.get_colour_time_efficiency(hora inicial del color, hora final del color, número de bastidores)
-    Todas esas líneas están en el historial impresas, las podría coger de ahí??
-    """
+    percentage.update_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    percentage.update_colour_time_efficiency(input_record.colour_start_time,
+                                             input_record.colour_end_time,
+                                             input_record.hangers_amount)
 
 
 def on_register_end_button_click():
@@ -139,11 +126,6 @@ def on_register_end_button_click():
         return
 
     input_record = inputView.get_input()
-    """
-    percentage.get_colour_time_efficiency(input_record.colour_start_time,
-                                          input_record.colour_end_time,
-                                          input_record.hangers_amount)
-    """
     inputView.reset(input_record.colour_end_time, True)
 
     # Poner en el inicio hora lacado el tiempo que en inicio cambio de color.
@@ -151,7 +133,10 @@ def on_register_end_button_click():
     print_history()
     a, b = load_average_colour_change_time()
     num_rows, registry_file = load_history()
-    percentage.get_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    percentage.update_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    percentage.update_colour_time_efficiency(input_record.colour_start_time,
+                                             input_record.colour_end_time,
+                                             input_record.hangers_amount)
 
     register_button.config(state=DISABLED)
     register_end_button.config(state=DISABLED)
@@ -170,7 +155,6 @@ def on_register_and_close_click():
 
 
 def on_register_stop_button_click():
-
     # Si hay errores, mostramos un cuadro de diálogo al usuario y retornamos ejecución
     errors = inputView.is_input_valid()
     if len(errors) != 0:
@@ -184,31 +168,21 @@ def on_register_stop_button_click():
     print_history()
     a, b = load_average_colour_change_time()
     num_rows, registry_file = load_history()
-    percentage.get_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    percentage.update_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    percentage.update_colour_time_efficiency(input_record.colour_start_time,
+                                             input_record.colour_end_time,
+                                             input_record.hangers_amount)
 
 
 root = tk.Tk()
 root.title("REGISTROS COLORES LACADO II")
-# xroot = 790
-# yroot = 630
-# root.geometry("1600x900")
-# Para abrir la ventana maximizada
-# root.state("zoomed")
-# Adquirir las dimensiones de la pantalla
-# xroot = root.winfo_screenwidth()
-# yroot = root.winfo_screenheight()
+root.geometry("1600x900")
 # root.iconbitmap("Gaviota.ico")
-root.state("zoomed")
+# root.state("zoomed")
 
 # Lugar en el que se debe hacer el gráfico
 # graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")
 # graphic.place(relx=0.25, rely=0.655, relwidth=0.6, relheight=0.34)
-
-# Variables a utilizar.
-show_efficiency_hangers = StringVar()
-colour_1 = StringVar()
-colour_2 = StringVar()
-show_efficiency_change_colour = StringVar()
 
 # Variables de la posición de los cuadros de "Registrar" hacia abajo
 x1 = 0.01
@@ -264,12 +238,11 @@ register_close_button.place(relx=0.6, rely=yclose, relwidth=0.135, relheigh=0.15
 
 root.mainloop()
 
-# Cosas para hacer:
-    # 1.- Poner una celda para que salga el nombre del color cuando lo han registrado. El funcionamiento sería igual que el LED.
-    # 2.- Crear un botón que abra una pantalla para poder registrar un nuevo color. Tendrían que añadir él cógido del color y el nombre
-    #     y al registrar que lo añada en los colores.
-    # 3.- Botón de "Registrar y DESCANSO":
-    #       i) Preguntar si van a continuar con el mismo color.
-    #               a) Respuesta = SÍ: Poner el color en la casilla y cuando pulsen el botón para poner la hora del cambio,
-    #                                  que se ponga también la de inicio.
-    #               b) Respuesta = NO: Poner todo en blanco conforme está ahora mismo, para que ellos empiecen igual que si comenzara un día nuevo.
+# TODO Cosas para hacer:
+#  1.- Crear un botón que abra una pantalla para poder registrar un nuevo color.
+#      Tendrían que añadir él cógido del color y el nombre y al registrar que lo añada en los colores.
+#  2.- Botón de "Registrar y DESCANSO":
+#      i) Preguntar si van a continuar con el mismo color.
+#         a) Respuesta = SÍ: Poner el color en la casilla y cuando pulsen el botón para poner la hora del cambio,
+#                            que se ponga también la de inicio.
+#         b) Respuesta = NO: Borrar formulario, como ahora, para que ellos empiecen igual que si comenzara un día nuevo.
