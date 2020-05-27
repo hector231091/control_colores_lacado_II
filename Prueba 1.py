@@ -58,43 +58,47 @@ def load_average_colour_change_time():
         lines = reader(average_time)
         header = next(lines)
 
-        list_average_change_time = []
-        join_colour_1_and_2 = []
+        average_change_time_list = []
+        colour_1_and_2_list = []
 
         for line in average_time:
-            list_average_change_time.append(line[0:-1])
+            average_change_time_list.append(line[0:-1])
             c1 = line[0:8]
             inter_caracter = "-"
             c2 = line[9:17]
             # tendríamos que crear otra columna
             string_colours = c1 + inter_caracter + c2  # e.g. 40100100-40100111
-            join_colour_1_and_2.append(string_colours)
+            colour_1_and_2_list.append(string_colours)
 
-    return join_colour_1_and_2, list_average_change_time
+    return colour_1_and_2_list, average_change_time_list
 
 
 def load_history():
     registry_file = pd.read_csv(REGISTRY_FILE_NAME, ";", header=None, na_filter=False)
-    num_rows = len(registry_file[0])
 
-    return num_rows, registry_file
+    records = []
+    registry_file_length = len(registry_file)
+    for i in range(registry_file_length):
+        record = Record(i,
+                        registry_file[0][i],
+                        registry_file[1][i],
+                        registry_file[2][i],
+                        registry_file[3][i],
+                        registry_file[4][i],
+                        registry_file[5][i])
+        records.append(record)
+    return records
 
 
 def print_history():
-    # Imprimir en el historial.
-    # Pasamos el archivo de los registros a una matriz
-    num_rows, registry_file = load_history()
+    history_as_records = load_history()
 
-    records = []
-    for i in range(AMOUNT_OF_RECORDS_TO_SHOW):
-        record = Record(num_rows - i,
-                        registry_file[0][num_rows - i - 1],
-                        registry_file[1][num_rows - i - 1][11:21],
-                        registry_file[2][num_rows - i - 1][11:21],
-                        registry_file[3][num_rows - i - 1][11:21],
-                        registry_file[4][num_rows - i - 1],
-                        registry_file[5][num_rows - i - 1])
-        records.append(record)
+    history_length = len(history_as_records)
+    # Extraemos los últimos elementos de acuerdo a los especificado en AMOUNT_OF_RECORDS_TO_SHOW
+    # e invertimos la lista para mostrar los últimos registros al principio de la lista
+    records = history_as_records[history_length-AMOUNT_OF_RECORDS_TO_SHOW:history_length]
+    records.reverse()
+
     historical.update_historical(records)
 
 
@@ -110,9 +114,9 @@ def on_register_continue_button_click():
 
     register_input(input_record)
     print_history()
-    a, b = load_average_colour_change_time()
-    num_rows, registry_file = load_history()
-    percentage.update_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    colour_1_and_2_list, average_change_time_list = load_average_colour_change_time()
+    history_as_records = load_history()
+    percentage.update_change_colour_time_efficiency(colour_1_and_2_list, average_change_time_list, history_as_records)
     percentage.update_colour_time_efficiency(input_record.colour_start_time,
                                              input_record.colour_end_time,
                                              input_record.hangers_amount)
@@ -131,9 +135,9 @@ def on_register_end_button_click():
     # Poner en el inicio hora lacado el tiempo que en inicio cambio de color.
     register_input(input_record)
     print_history()
-    a, b = load_average_colour_change_time()
-    num_rows, registry_file = load_history()
-    percentage.update_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    colour_1_and_2_list, average_change_time_list = load_average_colour_change_time()
+    history_as_records = load_history()
+    percentage.update_change_colour_time_efficiency(colour_1_and_2_list, average_change_time_list, history_as_records)
     percentage.update_colour_time_efficiency(input_record.colour_start_time,
                                              input_record.colour_end_time,
                                              input_record.hangers_amount)
@@ -166,9 +170,9 @@ def on_register_stop_button_click():
 
     register_input(input_record)
     print_history()
-    a, b = load_average_colour_change_time()
-    num_rows, registry_file = load_history()
-    percentage.update_change_colour_time_efficiency(a, b, num_rows, registry_file)
+    colour_1_and_2_list, average_change_time_list = load_average_colour_change_time()
+    history_as_records = load_history()
+    percentage.update_change_colour_time_efficiency(colour_1_and_2_list, average_change_time_list, history_as_records)
     percentage.update_colour_time_efficiency(input_record.colour_start_time,
                                              input_record.colour_end_time,
                                              input_record.hangers_amount)
@@ -176,9 +180,9 @@ def on_register_stop_button_click():
 
 root = tk.Tk()
 root.title("REGISTROS COLORES LACADO II")
-# root.geometry("1600x900")
+root.geometry("1600x900")
 # root.iconbitmap("Gaviota.ico")
-root.state("zoomed")
+# root.state("zoomed")
 
 # Lugar en el que se debe hacer el gráfico
 # graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")

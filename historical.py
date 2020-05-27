@@ -191,8 +191,8 @@ class HistoricalView(Frame):
             record = records[i]
             self.__labels[i][0].configure(text=record.id)
             self.__labels[i][1].configure(text=record.colour_code)
-            self.__labels[i][2].configure(text=record.change_start_time)
-            self.__labels[i][3].configure(text=record.colour_start_time)
-            self.__labels[i][4].configure(text=record.colour_end_time)
+            self.__labels[i][2].configure(text=record.change_start_time[11:21])
+            self.__labels[i][3].configure(text=record.colour_start_time[11:21])
+            self.__labels[i][4].configure(text=record.colour_end_time[11:21])
             self.__labels[i][5].configure(text=record.hangers_amount)
             self.__labels[i][6].configure(text=record.observations)

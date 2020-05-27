@@ -61,18 +61,19 @@ class ShowPercentage(Frame):
                                                   ipady=CELL_MARGIN,
                                                   sticky=W + E + N + S)
 
-    def update_change_colour_time_efficiency(self, color_1_and_2, change_times_list, num_rows, registry_file):
-        last_colour = registry_file[0][num_rows - 1]
-        penultimate_colour = registry_file[0][num_rows - 2]
-
+    def update_change_colour_time_efficiency(self,
+                                             color_1_and_2_list,
+                                             change_times_list,
+                                             history_as_records):
+        last_colour = history_as_records[len(history_as_records) - 1].colour_code
+        penultimate_colour = history_as_records[len(history_as_records) - 2].colour_code
         concatenate_two_colours = penultimate_colour + "-" + last_colour
 
         try:
-            index_concatenate_colours = color_1_and_2.index(concatenate_two_colours)
+            index_concatenate_colours = color_1_and_2_list.index(concatenate_two_colours)
             efficiency = self.__calculate_efficiency_change_colour(index_concatenate_colours,
                                                                    change_times_list,
-                                                                   registry_file,
-                                                                   num_rows)
+                                                                   history_as_records)
             self.show_efficiency_change_colour.set(efficiency)
 
         except ValueError:
@@ -108,11 +109,10 @@ class ShowPercentage(Frame):
     def __calculate_efficiency_change_colour(self,
                                              color_position_in_the_list,
                                              change_times_list,
-                                             registry_file,
-                                             num_rows):
+                                             history_as_records):
         average_time_of_colour_change = int((change_times_list[color_position_in_the_list][18:]))
-        time1 = datetime.strptime(registry_file[1][num_rows - 1][:], DATE_TIME_FORMAT)
-        time2 = datetime.strptime(registry_file[2][num_rows - 1][:], DATE_TIME_FORMAT)
+        time1 = datetime.strptime(history_as_records[len(history_as_records) - 1].change_start_time, DATE_TIME_FORMAT)
+        time2 = datetime.strptime(history_as_records[len(history_as_records) - 1].colour_start_time, DATE_TIME_FORMAT)
 
         last_time_change = time2 - time1
 
