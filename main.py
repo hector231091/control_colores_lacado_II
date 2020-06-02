@@ -98,7 +98,7 @@ def on_register_continue_button_click():
     errors = inputView.is_input_valid()
     if len(errors) != 0:
         messagebox.showerror(message=errors[0], title="¡ERROR!")
-        return -1
+        return
 
     input_record = inputView.get_input()
     inputView.reset(input_record.colour_end_time)
@@ -143,10 +143,18 @@ def on_register_and_close_click():
     closing_message = messagebox.askquestion(message="¿Seguro que quieres registrar la línea y salir?",
                                              title="Cierre del programa")
     if closing_message == "yes":
-        if on_register_continue_button_click() != -1:
-            root.destroy()
-        else:
+        # Si hay errores, mostramos un cuadro de diálogo al usuario y retornamos ejecución
+        errors = inputView.is_input_valid()
+        if len(errors) != 0:
+            messagebox.showerror(message=errors[0], title="¡ERROR!")
             return
+
+        input_record = inputView.get_input()
+
+        # Poner en el inicio hora lacado el tiempo que en inicio cambio de color.
+        register_input(input_record)
+
+        root.destroy()
 
 
 def on_register_stop_button_click():
@@ -154,7 +162,7 @@ def on_register_stop_button_click():
     errors = inputView.is_input_valid()
     if len(errors) != 0:
         messagebox.showerror(message=errors[0], title="¡ERROR!")
-        return -1
+        return
 
     input_record = inputView.get_input()
     inputView.reset_break(input_record.colour_end_time)
