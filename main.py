@@ -165,7 +165,7 @@ def on_register_stop_button_click():
         return
 
     input_record = inputView.get_input()
-    inputView.reset_break(input_record.colour_end_time)
+    inputView.reset_break()
 
     register_input(input_record)
     print_history()

@@ -1,6 +1,5 @@
 from datetime import datetime
 from tkinter import *
-from csv import reader
 
 import tk_tools
 
@@ -46,6 +45,7 @@ class InputView(Frame):
         self.led_colour.grid(row=2, column=0)
         self.led_colour.to_grey(on=True)
         self.grid_columnconfigure(0, weight=1)  # La fila toma el ancho de pantalla
+
         self.colour_name_label = Label(self, textvariable=self.colour_name, anchor="center", relief="groove")
         self.colour_name_label.grid(row=3,
                                     column=0,
@@ -187,7 +187,7 @@ class InputView(Frame):
 
     # Resetea la vista.
     # Si el campo change_start_date_time no está vacío, lo actualiza como "Hora inicio cambio".
-    # Si el campo force_end es True, añadimos "FIN" al color
+    # Si el campo force_end es True, añadimos "FIN" al color y actualizamos botones y leds
     def reset(self, change_start_date_time="", force_end=False):
         self.__reset_buttons()
         self.__reset_leds()
@@ -195,19 +195,14 @@ class InputView(Frame):
 
         if change_start_date_time != "":
             self.__update_ui_on_change_start_time_click()
-        # Al pulsar el botón "Registrar y FIN" los campos a habilitar y deshabilitar son diferentes (tanto botones como LEDs), así que lo actualizo con este "if".
         if force_end:
-            self.colour_start_time_button.config(state=DISABLED)
-            self.colour_end_time_button.config(state=NORMAL)
-            self.led_colour_start_time.to_green(on=True)
-            self.observations_entry.config(state=DISABLED) # Esta línea no funciona y no entiendo muy bien el por qué.
+            self.__update_ui_on_colour_start_time_click()
+            self.observations_entry.config(state=DISABLED)
 
-    def reset_break(self, change_start_date_time="", force_end=False):
+    def reset_break(self):
         self.__reset_buttons()
         self.__reset_leds()
-        self.__clear_input_break(change_start_date_time)
-
-        # Al pulsar el botón "Registrar y FIN" los campos a habilitar y deshabilitar son diferentes (tanto botones como LEDs), así que lo actualizo con este "if".
+        self.__clear_input_break()
 
     # Devuelve una lista con errores. Si la lista devuelta está vacía, significa que no hay errores.
     # La validación se realiza en el mismo orden en el que se muestran los diferentes campos,
@@ -311,24 +306,21 @@ class InputView(Frame):
 
     def __clear_input(self, force_end, change_start_date_time=""):
         self.colour_entry.delete(0, "end")
-        # No acabo de entender esta línea, como que si "Falso"? El qué es falso??
-        if force_end: # Al pulsar el botón "Registrar y FIN", la hora inicio cambio e inicio color se deben actualizar con la hora de fin del color anterior.
-            self.colour_entry.insert(0, "FIN")
-            self.change_start_date_time.set(change_start_date_time)
-            self.colour_start_date_time.set(change_start_date_time)
-            self.colour_end_date_time.set("")
-            self.hangers_entry.delete(0, "end")
-            self.observations_entry.delete(0, "end")
+        self.change_start_date_time.set(change_start_date_time)
+        self.colour_end_date_time.set("")
+        self.hangers_entry.delete(0, "end")
+        self.observations_entry.delete(0, "end")
 
+        if force_end:
+            self.colour_entry.insert(0, "FIN")
+            # Al pulsar el botón "Registrar y FIN", la hora inicio color también se deben actualizar con
+            # la hora de fin del color anterior.
+            self.colour_start_date_time.set(change_start_date_time)
         else:
-            self.change_start_date_time.set(change_start_date_time)
             self.colour_start_date_time.set("")
-            self.colour_end_date_time.set("")
-            self.hangers_entry.delete(0, "end")
-            self.observations_entry.delete(0, "end")
 
     # Como la función anterior no entiendo bien cómo funciona...hago una nueva para el descanso.
-    def __clear_input_break(self, change_start_date_time=""):
+    def __clear_input_break(self):
         self.colour_entry.delete(0, "end")
         self.change_start_date_time.set("")
         self.colour_start_date_time.set("")
