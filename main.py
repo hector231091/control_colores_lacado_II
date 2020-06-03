@@ -183,26 +183,12 @@ root.geometry("1600x900")
 # root.iconbitmap("Gaviota.ico")
 # root.state("zoomed")
 
-# Lugar en el que se debe hacer el gráfico
-# graphic = Frame(root, bg="WHITE", borderwidth=3, relief="groove")
-# graphic.place(relx=0.25, rely=0.655, relwidth=0.6, relheight=0.34)
-
 # Variables de la posición de los cuadros de "Registrar" hacia abajo
-x1 = 0.01
-xclose = 0.85
-yclose = 0.85
+left_margin = 0.01
 
 inputView = InputView(root, load_colours())
 inputView.pack(fill="both")
-inputView.place(relx=x1, rely=0.01, relwidth=0.975, relheigh=0.25)
-
-# Botón Registrar y FIN
-register_end_button = Button(root,
-                             text="Registrar y FIN",
-                             activebackground="green",
-                             command=on_register_end_button_click,
-                             state=NORMAL)
-register_end_button.place(relx=0.8, rely=0.93, relwidth=0.2, relheigh=0.07)
+inputView.place(relx=left_margin, rely=0.01, relwidth=0.975, relheigh=0.25)
 
 # Botón Registrar y CONTINUAR
 register_button = Button(root,
@@ -210,6 +196,16 @@ register_button = Button(root,
                          activebackground="green",
                          command=on_register_continue_button_click)
 register_button.place(relx=0.39, rely=0.17, relwidth=0.2, relheigh=0.07)
+
+# Historial de los registros anteriores
+historical = HistoricalView(root, AMOUNT_OF_RECORDS_TO_SHOW)
+historical.pack(fill="both")
+historical.place(relx=left_margin, rely=0.25, relwidth=0.975, relheigh=0.5)
+print_history()
+
+percentage = ShowPercentage(root)
+percentage.pack(fill="both")
+percentage.place(relx=0.41, rely=0.75, relwidth=0.3, relheigh=0.3)
 
 # Botón Registrar y DESCANSO
 register_stop_button = Button(root,
@@ -219,17 +215,15 @@ register_stop_button = Button(root,
                               state=NORMAL)
 register_stop_button.place(relx=0.01, rely=0.93, relwidth=0.2, relheigh=0.07)
 
-# Historial de los registros anteriores.
-historical = HistoricalView(root, AMOUNT_OF_RECORDS_TO_SHOW)
-historical.pack(fill="both")
-historical.place(relx=x1, rely=0.25, relwidth=0.975, relheigh=0.5)
-print_history()
+# Botón Registrar y FIN
+register_end_button = Button(root,
+                             text="Registrar y FIN",
+                             activebackground="green",
+                             command=on_register_end_button_click,
+                             state=NORMAL)
+register_end_button.place(relx=0.8, rely=0.93, relwidth=0.2, relheigh=0.07)
 
-percentage = ShowPercentage(root)
-percentage.pack(fill="both")
-percentage.place(relx=0.4, rely=0.75, relwidth=0.3, relheigh=0.3)
-
-# Botón para cerrar ventana. Ver si finalmente es necesario o no.
+# Botón Registrar y CERRAR
 register_close_button = Button(root, text="Registrar y CERRAR",
                                activebackground="red",
                                command=on_register_and_close_click,
@@ -237,7 +231,7 @@ register_close_button = Button(root, text="Registrar y CERRAR",
                                fg="white",
                                font=("Comic Sans MS", 12),
                                state=DISABLED)
-register_close_button.place(relx=0.6, rely=yclose, relwidth=0.135, relheigh=0.15)
+register_close_button.place(relx=0.6, rely=0.85, relwidth=0.135, relheigh=0.15)
 
 root.mainloop()
 
