@@ -4,7 +4,7 @@ from tkinter import messagebox
 
 import pandas as pd
 
-from data import Record
+from data import Record, RegisterMode
 from historical import HistoricalView
 from input_entry import InputView
 from percentage import ShowPercentage
@@ -121,9 +121,8 @@ def on_register_end_button_click():
         return
 
     input_record = inputView.get_input()
-    inputView.reset(input_record.colour_end_time, True)
+    inputView.reset(input_record.colour_end_time, RegisterMode.END)
 
-    # Poner en el inicio hora lacado el tiempo que en inicio cambio de color.
     register_input(input_record)
     print_history()
     average_change_time_map = load_average_colour_change_time()
@@ -165,7 +164,7 @@ def on_register_stop_button_click():
         return
 
     input_record = inputView.get_input()
-    inputView.reset_break()
+    inputView.reset(register_mode=RegisterMode.BREAK)
 
     register_input(input_record)
     print_history()

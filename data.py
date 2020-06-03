@@ -61,3 +61,9 @@ class ValidationType(enum.Enum):
     VALID = 1
     INVALID = 2
     EMPTY = 3
+
+
+class RegisterMode(enum.Enum):
+    CONTINUE = 1  # Para continuar registrando a continuación
+    END = 2  # Para finalizar y cerrar el programa
+    BREAK = 3  # Para tomar un descanso
