@@ -206,6 +206,9 @@ class InputView(Frame):
     def is_input_valid(self):
         return validator.is_input_valid(self.get_input(), self.colour_map)
 
+    def is_input_valid_at_stop(self):
+        return validator.is_input_valid_at_stop(self.get_input(), self.colour_map)
+
     def __on_change_start_time_click(self):
         date = self.__get_now_as_formatted_date_time()
         self.change_start_date_time.set(date)

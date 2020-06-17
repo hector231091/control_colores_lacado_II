@@ -157,23 +157,43 @@ def on_register_and_close_click():
 
 
 def on_register_stop_button_click():
+    # En este caso podrían registrar una línea sin tener todas las horas puestas porque les puede pillar en medio de un cambio.
     # Si hay errores, mostramos un cuadro de diálogo al usuario y retornamos ejecución
-    errors = inputView.is_input_valid()
-    if len(errors) != 0:
-        messagebox.showerror(message=errors[0], title="¡ERROR!")
-        return
+    result = messagebox.askyesno(message="¿Estás en medio de un cambio de color?")
 
-    input_record = inputView.get_input()
-    inputView.reset(register_mode=RegisterMode.BREAK)
+    if result == True:
 
-    register_input(input_record)
-    print_history()
-    average_change_time_map = load_average_colour_change_time()
-    history_as_records = load_history()
-    percentage.update_change_colour_time_efficiency(average_change_time_map, history_as_records)
-    percentage.update_colour_time_efficiency(input_record.colour_start_time,
-                                             input_record.colour_end_time,
-                                             input_record.hangers_amount)
+        errors = inputView.is_input_valid_at_stop()
+        if len(errors) != 0:
+            messagebox.showerror(message=errors[0], title="¡ERROR!")
+            return
+
+        input_record = inputView.get_input()
+        inputView.reset(register_mode=RegisterMode.BREAK)
+
+        register_input(input_record)
+        print_history()
+        average_change_time_map = load_average_colour_change_time()
+        history_as_records = load_history()
+
+    else:
+
+        errors = inputView.is_input_valid()
+        if len(errors) != 0:
+            messagebox.showerror(message=errors[0], title="¡ERROR!")
+            return
+
+        input_record = inputView.get_input()
+        inputView.reset(register_mode=RegisterMode.BREAK)
+
+        register_input(input_record)
+        print_history()
+        average_change_time_map = load_average_colour_change_time()
+        history_as_records = load_history()
+        percentage.update_change_colour_time_efficiency(average_change_time_map, history_as_records)
+        percentage.update_colour_time_efficiency(input_record.colour_start_time,
+                                                 input_record.colour_end_time,
+                                                 input_record.hangers_amount)
 
 
 root = tk.Tk()
@@ -187,19 +207,19 @@ left_margin = 0.01
 
 inputView = InputView(root, load_colours())
 inputView.pack(fill="both")
-inputView.place(relx=left_margin, rely=0.01, relwidth=0.975, relheigh=0.25)
+inputView.place(relx=left_margin, rely=0.01, relwidth=0.975, relheigh=0.35)
 
 # Botón Registrar y CONTINUAR
 register_button = Button(root,
                          text="Registrar y CONTINUAR",
                          activebackground="green",
                          command=on_register_continue_button_click)
-register_button.place(relx=0.39, rely=0.17, relwidth=0.2, relheigh=0.07)
+register_button.place(relx=0.39, rely=0.27, relwidth=0.2, relheigh=0.07)
 
 # Historial de los registros anteriores
 historical = HistoricalView(root, AMOUNT_OF_RECORDS_TO_SHOW)
 historical.pack(fill="both")
-historical.place(relx=left_margin, rely=0.25, relwidth=0.975, relheigh=0.5)
+historical.place(relx=left_margin, rely=0.35, relwidth=0.975, relheigh=0.1)
 print_history()
 
 percentage = ShowPercentage(root)
@@ -212,7 +232,7 @@ register_stop_button = Button(root,
                               activebackground="green",
                               command=on_register_stop_button_click,
                               state=NORMAL)
-register_stop_button.place(relx=0.01, rely=0.93, relwidth=0.2, relheigh=0.07)
+register_stop_button.place(relx=0.01, rely=0.73, relwidth=0.2, relheigh=0.07)
 
 # Botón Registrar y FIN
 register_end_button = Button(root,
@@ -220,7 +240,7 @@ register_end_button = Button(root,
                              activebackground="green",
                              command=on_register_end_button_click,
                              state=NORMAL)
-register_end_button.place(relx=0.8, rely=0.93, relwidth=0.2, relheigh=0.07)
+register_end_button.place(relx=0.8, rely=0.73, relwidth=0.2, relheigh=0.07)
 
 # Botón Registrar y CERRAR
 register_close_button = Button(root, text="Registrar y CERRAR",

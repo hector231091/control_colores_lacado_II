@@ -78,3 +78,21 @@ def is_input_valid(input_record, colour_map):
     if observations_validation.type == ValidationType.INVALID:
         errors.append(observations_validation.message)
     return errors
+
+def is_input_valid_at_stop(input_record, colour_map):
+    colour_validation = validate_colour(input_record.colour_code, colour_map)
+    change_validation = validate_time(input_record.change_start_time)
+    colour_start_validation = validate_time(input_record.colour_start_time)
+    observations_validation = \
+        validate_observations(input_record.observations, input_record.colour_code)
+
+    errors = []
+    if colour_validation.type != ValidationType.VALID:
+        errors.append(colour_validation.message)
+    if change_validation.type != ValidationType.VALID:
+        errors.append(change_validation.message)
+    if colour_start_validation.type != ValidationType.VALID:
+        errors.append(colour_start_validation.message)
+    if observations_validation.type == ValidationType.INVALID:
+        errors.append(observations_validation.message)
+    return errors
